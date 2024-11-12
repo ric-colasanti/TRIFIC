@@ -17,7 +17,7 @@ to nodes-init [number-of-nodes]
     set size 0.4 ; Set the size of the nodes
   ]
   ;; Lay out the nodes so links are not overlapping
-  repeat 1800 [ layout ]
+  repeat 5000 [ layout ]
   ;; Leave space around the edges
   ask nodes [ setxy 0.95 * xcor 0.95 * ycor ]
   
@@ -33,7 +33,7 @@ to nodes-init [number-of-nodes]
     
     ;; Assign a speed limit to the road
     ifelse random-float 1.0 < 0.7[
-      set speed_limmit random-float restricted-road-speed
+      set speed_limmit restricted-road-speed
       set color yellow  ; Color yellow for restricted roads
     ][
       set speed_limmit 1.0

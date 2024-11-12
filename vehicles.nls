@@ -24,7 +24,7 @@ to vehicles-init [number-of-vehicles]
     ;write new-location
     ;write new-destination
     let new-trip 0
-    ask new-location [ set new-trip nw:path-to new-destination]
+    ask new-location [ set new-trip nw:weighted-path-to new-destination distance_to_destination ]
     let new-road 0
     set trip new-trip
    
@@ -35,7 +35,7 @@ to vehicles-init [number-of-vehicles]
     if not empty? trip [
       set-destination new-location ;new-journey; new-road 
 
-      set top-speed ( random-float ( 1.0 - 0.4 ) ) + 0.4  ; Set random maximum speed
+      set top-speed ( random-float ( 1.0 - slowest-vehicle ) ) + slowest-vehicle  ; Set random maximum speed
       set speed top-speed                  ; Set initial speed to maximum speed
       set remaing-journey journey   ; Set initial remaining journey
     ]

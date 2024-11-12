@@ -27,10 +27,10 @@ end
 ; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
-423
-27
-893
-498
+325
+25
+795
+496
 -1
 -1
 14.0
@@ -54,10 +54,10 @@ ticks
 30.0
 
 BUTTON
-32
-55
-116
-88
+27
+25
+111
+58
 NIL
 setup
 NIL
@@ -71,10 +71,10 @@ NIL
 1
 
 BUTTON
-32
-125
-116
-158
+27
+95
+111
+128
 NIL
 go
 T
@@ -88,10 +88,10 @@ NIL
 0
 
 BUTTON
-32
-90
-116
-123
+27
+60
+111
+93
 go once
 go
 NIL
@@ -105,45 +105,60 @@ NIL
 0
 
 SLIDER
-169
-68
-341
-101
+120
+25
+310
+58
 number_of_nodes
 number_of_nodes
 5
 50
-21.0
+30.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-166
-107
-354
-140
+117
+64
+312
+97
 number_of_vehicles
 number_of_vehicles
 2
 100
-50.0
+60.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-167
-146
-361
-179
+118
+103
+312
+136
 restricted-road-speed
 restricted-road-speed
 0.1
 1
 0.2
+0.1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+116
+142
+311
+175
+slowest-vehicle
+slowest-vehicle
+0.1
+1.0
+0.1
 0.1
 1
 NIL
@@ -504,5 +519,5 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 @#$#@#$#@
-0
+1
 @#$#@#$#@
