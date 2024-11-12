@@ -16,7 +16,10 @@ to vehicles-init [number-of-vehicles]
     set color lime                     ; Set vehicle color
     set shape "default"               ; Set vehicle shape
     let new-location one-of nodes
-    let new-destination one-of nodes
+    let new-destination new-location
+    while [ new-destination = new-location ] [
+      set new-destination one-of nodes
+    ]
     
     ;write new-location
     ;write new-destination
