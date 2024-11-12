@@ -8,6 +8,7 @@ vehicles-own [
   speed-restriction   ; Local speed restriction
   journey            ; Total distance of the current journey
   remaing-journey     ; Remaining distance of the current journey
+  trip                ; the path to utimate destination
 ]
 
 to vehicles-init [number-of-vehicles]
@@ -15,23 +16,31 @@ to vehicles-init [number-of-vehicles]
     set color lime                     ; Set vehicle color
     set shape "default"               ; Set vehicle shape
     let new-location one-of nodes
+    let new-destination one-of nodes
+    
+    ;write new-location
+    ;write new-destination
+    let new-trip 0
+    ask new-location [ set new-trip nw:path-to new-destination]
     let new-road 0
-
+    set trip new-trip
+   
     ; Assign a random destination and road to the vehicle
     ask new-location [
       set new-road one-of my-roads
     ]
-    set-destination new-location new-road 
+    if not empty? trip [
+      set-destination new-location ;new-journey; new-road 
 
-    set top-speed random-float 0.9 + 0.1  ; Set random maximum speed
-    set speed top-speed                  ; Set initial speed to maximum speed
-    set remaing-journey journey   ; Set initial remaining journey
-    fd speed
-    set speed-restriction [speed_limmit] of new-road
+      set top-speed ( random-float ( 1.0 - 0.4 ) ) + 0.4  ; Set random maximum speed
+      set speed top-speed                  ; Set initial speed to maximum speed
+      set remaing-journey journey   ; Set initial remaining journey
+    ]
   ]
 end
 
 to vehicles-move
+  if not empty? trip [
   let visible-neighbors (other turtles in-cone 0.2 10) ; Identify nearby vehicles
   let ahead nearest-vehicle-traverling-in-same-direction ; Find the nearest vehicle ahead
 
@@ -52,27 +61,28 @@ to vehicles-move
       ]
     ]
   ]
-
-  ; If the vehicle reaches its destination, find a new one
-  if distance location >= journey [
-    let difference distance location - journey ; Calculate remaining distance
-    let new-road 0
-    ask destination [
-      set new-road one-of my-roads
-    ]
-    ; Set a new destination and road
-    set-destination destination new-road
-    set speed-restriction [speed_limmit] of new-road
-    set speed difference                       
-  ]
-
-  ; Enforce speed limit
-  if speed > speed-restriction [
+if speed > speed-restriction [
     set speed speed-restriction
   ]
 
   fd speed ; Move forward
   set remaing-journey distance destination ; Update remaining journey distance
+  ; If the vehicle reaches its destination, find a new one
+  if distance location >= journey [
+    let difference distance location - journey ; Calculate remaining distance
+    set-destination destination 
+    set speed difference 
+      if speed > speed-restriction [
+    set speed speed-restriction
+  ]
+
+  fd speed ; Move forward
+  set remaing-journey distance destination ; Update remaining journey distance
+  ]
+
+  ; Enforce speed limit
+  
+  ]
 end
 
 to-report nearest-vehicle-traverling-in-same-direction
@@ -83,7 +93,9 @@ to-report nearest-vehicle-traverling-in-same-direction
   ] [distance myself]
 end
 
-to set-destination [new-location new-road]
+to set-destination [new-location]
+  let new-road first trip
+  set trip but-first trip
   let new-destination 0
   ;select the correct end of the road for the new destination
   ask  new-road [  
@@ -93,6 +105,7 @@ to set-destination [new-location new-road]
         set new-destination end1
       ]
   ]
+  set speed-restriction [speed_limmit] of new-road
   set location new-location
   set destination new-destination
   move-to location                   ; Move to the new location
