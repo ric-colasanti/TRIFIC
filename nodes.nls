@@ -1,9 +1,16 @@
 ; Define the breed for nodes
 breed [nodes node]
+undirected-link-breed [ roads road ]
+roads-own [
+  distance_to_destination
+  speed_limmit
+]
+
+
 
 ; Initialize nodes
 to nodes-init [number-of-nodes]
-  nw:generate-preferential-attachment nodes links number-of-nodes 2  ; Uses network extention creates random netwrk with low connectivity
+  nw:generate-preferential-attachment nodes roads number-of-nodes 2  ; Uses network extention creates random netwrk with low connectivity
   [ 
     set color blue  ; Set the color of the nodes
     set shape "circle" ; Set the shape of the nodes
@@ -13,6 +20,27 @@ to nodes-init [number-of-nodes]
   repeat 1800 [ layout ]
   ;; Leave space around the edges
   ask nodes [ setxy 0.95 * xcor 0.95 * ycor ]
+  
+  ask roads [
+    let turtle1 end1
+    let turtle2 end2
+    let link-distance 0  
+    ;; Calculate distance between the two nodes connected by the road
+    ask turtle1 [  
+      set link-distance distance turtle2
+    ]
+    set distance_to_destination link-distance
+    
+    ;; Assign a speed limit to the road
+    ifelse random-float 1.0 < 0.7[
+      set speed_limmit random-float restricted-road-speed
+      set color yellow  ; Color yellow for restricted roads
+    ][
+      set speed_limmit 1.0
+    ]
+     ;; Set the thickness of the road based on the speed limit
+    set thickness speed_limmit * 0.4
+  ]
 end
 
 

@@ -1,43 +1,49 @@
 breed [vehicles vehicle] ; Define a new breed called "vehicles"
 
 vehicles-own [
-  location            ; A turtle variable representing the current location of the vehicle
-  destination         ; A turtle variable representing the destination of the vehicle
-  top-speed           ; A turtle variable representing the speed of the vehicle
-  speed               ; A turtle variable representing the current speed of the vehicle
-  journey            ; A turtle variable representing the total distance of the current journey
-  remaing-journey     ; A turtle variable representing the remaining distance of the current journey
+  location            ; Current location of the vehicle
+  destination         ; Destination of the vehicle
+  top-speed           ; Maximum speed of the vehicle
+  speed               ; Current speed of the vehicle
+  speed-restriction   ; Local speed restriction
+  journey            ; Total distance of the current journey
+  remaing-journey     ; Remaining distance of the current journey
 ]
 
 to vehicles-init [number-of-vehicles]
-  create-vehicles number-of-vehicles [ ; Create the specified number of vehicles
-    set color lime                     ; Set the color of the vehicles to lime
-    set shape "default"               ; Set the shape of the vehicles to the default shape
-    set location one-of nodes          ; Set the initial location of the vehicle to a random node
-    set destination one-of [link-neighbors] of location ; Set the initial destination of the vehicle to a random neighbor of its current location
+  create-vehicles number-of-vehicles [
+    set color lime                     ; Set vehicle color
+    set shape "default"               ; Set vehicle shape
+    let new-location one-of nodes
+    let new-road 0
 
-    move-to location                   ; Move the vehicle to its current location
-    face destination                   ; Turn the vehicle to face its destination
-    set journey distance destination    ; Set the total distance of the current journey to the distance between the current location and the destination
-    set top-speed random-float 0.9 + 0.1  ; Set the maximum speed of the vehicle to a random value between 0.1 and 1
-    set speed top-speed                  ; set current speed to be max speed
-    set remaing-journey journey   ; set remaining journy to the full journey
+    ; Assign a random destination and road to the vehicle
+    ask new-location [
+      set new-road one-of my-roads
+    ]
+    set-destination new-location new-road 
+
+    set top-speed random-float 0.9 + 0.1  ; Set random maximum speed
+    set speed top-speed                  ; Set initial speed to maximum speed
+    set remaing-journey journey   ; Set initial remaining journey
+    fd speed
+    set speed-restriction [speed_limmit] of new-road
   ]
 end
 
 to vehicles-move
-  let visible-neighbors (other turtles in-cone 0.2 10) ; Identify vehicles within a certain radius and angle
-  let ahead nearest-vehicle-traverling-in-same-direction ; Find the nearest vehicle traveling in the same direction
+  let visible-neighbors (other turtles in-cone 0.2 10) ; Identify nearby vehicles
+  let ahead nearest-vehicle-traverling-in-same-direction ; Find the nearest vehicle ahead
 
   ; Adjust speed based on traffic conditions
   set speed top-speed
   set color lime
   if ahead != nobody [
     ifelse distance ahead < speed [
-      set speed 0 ; Stop if too close to the vehicle ahead interaction distance is a function of actual speed
-      set color red ; indicates stoped
+      set speed 0 ; Stop if too close
+      set color red ; Indicate stopped
     ] [
-      if distance ahead < 2 * speed [ ; interaction distance is a function of actual speed
+      if distance ahead < 2 * speed [
         let ahead-speed [speed] of ahead ; Get the speed of the vehicle ahead
         if ahead-speed <= speed [
           set speed ahead-speed  ; Reduce speed to avoid collision
@@ -47,26 +53,49 @@ to vehicles-move
     ]
   ]
 
-  fd speed ; Move forward at the adjusted speed
-
   ; If the vehicle reaches its destination, find a new one
   if distance location >= journey [
-    let difference distance location - journey ; Calculate the remaining distance
-    set location destination            ; Set the current location to the destination
-    set destination one-of [link-neighbors] of destination ; Set a new random destination
-    move-to location                   ; Move to the new location
-    face destination                   ; Face the new destination
-    set journey distance destination    ; Set the total distance of the new journey
-    fd difference                       ; Move the remaining distance to the previous destination
+    let difference distance location - journey ; Calculate remaining distance
+    let new-road 0
+    ask destination [
+      set new-road one-of my-roads
+    ]
+    ; Set a new destination and road
+    set-destination destination new-road
+    set speed-restriction [speed_limmit] of new-road
+    set speed difference                       
   ]
 
-  set remaing-journey distance destination ; Update the remaining journey distance
+  ; Enforce speed limit
+  if speed > speed-restriction [
+    set speed speed-restriction
+  ]
+
+  fd speed ; Move forward
+  set remaing-journey distance destination ; Update remaining journey distance
 end
 
 to-report nearest-vehicle-traverling-in-same-direction
   report min-one-of other vehicles with [  
-    destination = [destination] of myself and  ; Find the nearest vehicle with the same destination 
-    remaing-journey < [remaing-journey] of myself and  ;and a shorter remaining journey
-    heading = [heading] of myself ; and heading in the same direction
+    destination = [destination] of myself and  ; Same destination
+    remaing-journey < [remaing-journey] of myself and  ; Shorter remaining journey
+    heading = [heading] of myself ; Same direction
   ] [distance myself]
+end
+
+to set-destination [new-location new-road]
+  let new-destination 0
+  ;select the correct end of the road for the new destination
+  ask  new-road [  
+      ifelse end1 = new-location[
+         set new-destination end2
+      ][
+        set new-destination end1
+      ]
+  ]
+  set location new-location
+  set destination new-destination
+  move-to location                   ; Move to the new location
+  face destination                   ; Face the new destination
+  set journey distance destination
 end

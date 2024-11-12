@@ -1,39 +1,50 @@
-; Include any necessary libraries
 extensions [ nw ]
-__includes ["vehicles.nls" "nodes.nls"]
+
+breed [ nodes node ]
+
+undirected-link-breed [ roads road ]
+roads-own [
+  distance_to_destination
+]
 
 
-; Set up the simulation
 to setup
-  clear-all ; Clear any existing data
-  nodes-init number_of_nodes ; Initialize nodes
-  vehicles-init number_of_vehicles ; Initialize vehicles
-  reset-ticks ; Reset the tick counter
-end
-
-
-; Advance the simulation by one tick
-to go
-  ask vehicles [
-    vehicles-move ; Move the vehicles
+  clear-all
+  create-nodes 2
+  let node_a node 0
+  let node_b node 1
+  ask node_a [
+    set shape "circle"
+    set color red
+    set xcor 1
+    set ycor 16
   ]
-  tick ; Advance the tick counter
+  ask node_b [
+    set shape "circle"
+    set color green
+    set xcor 31
+    set ycor 16
+    create-road-with node_a
+  ]
+  ask roads [
+  let turtle1 end1
+  let turtle2 end2
+
+  ask turtle1 [
+      let link-distance distance turtle2
+  ]
+  set distance_to_destination link-distance
+]
 end
-
-
-; Public Domain:
-; adapted from code by Uri Wilensky
-; To the extent possible under law, ric colasanti has waived all
-; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
-423
-27
-893
-498
+210
+10
+647
+448
 -1
 -1
-14.0
+13.0
 1
 10
 1
@@ -43,21 +54,21 @@ GRAPHICS-WINDOW
 0
 0
 1
--16
-16
--16
-16
-1
-1
+0
+32
+0
+32
+0
+0
 1
 ticks
 30.0
 
 BUTTON
-32
-55
-116
-88
+34
+150
+101
+183
 NIL
 setup
 NIL
@@ -70,138 +81,42 @@ NIL
 NIL
 1
 
-BUTTON
-32
-125
-116
-158
-NIL
-go
-T
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-0
-
-BUTTON
-32
-90
-116
-123
-go once
-go
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-0
-
-SLIDER
-169
-68
-341
-101
-number_of_nodes
-number_of_nodes
-5
-50
-30.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-166
-107
-354
-140
-number_of_vehicles
-number_of_vehicles
-2
-100
-40.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-167
-146
-361
-179
-restricted-road-speed
-restricted-road-speed
-0.1
-1
-0.2
-0.1
-1
-NIL
-HORIZONTAL
-
 @#$#@#$#@
-# A Simple Network-Based Vehicle Simulation
+## WHAT IS IT?
 
-## Abstract:
-This NetLogo model simulates a simple network of nodes and vehicles. Vehicles move between nodes along the network's edges, following a random path. The model incorporates traffic-aware speed control and local speed restrictions to provide a more realistic simulation of traffic flow and congestion..
+(a general understanding of what the model is trying to show or explain)
 
-## Model Description:
+## HOW IT WORKS
 
-Agents:
+(what rules the agents use to create the overall behavior of the model)
 
-Nodes: Static agents representing locations on the network. They are connected by links to form the network topology.
-Vehicles: Vehicles:
-Mobile agents that move between nodes. Each vehicle has a current location, a destination, a base speed, a current speed, a journey distance to its destination, and a current speed restriction based on the road it's traveling on.
-## Initialization:
+## HOW TO USE IT
 
-Nodes: A specified number of nodes are created and connected using preferential attachment to form a linked network with circular paths. The network is then laid out to avoid overlapping links.
-Vehicles: A specified number of vehicles are created and assigned to random nodes. Each vehicle is given a random destination node and a base speed.Additionally, the vehicle's initial speed restriction is set based on the road it starts on.
+(how to use the model, including a description of each of the items in the Interface tab)
 
-## Behavior:
+## THINGS TO NOTICE
 
-Vehicle Movement:
+(suggested things for the user to notice while running the model)
 
-Speed Adjustment:
-Each vehicle checks for other vehicles ahead on its current path.
-If another vehicle is detected within a certain distance, the current vehicle reduces its speed to avoid a collision.
-The amount of speed reduction depends on the distance to the vehicle ahead.
-The vehicle's speed is also constrained by the current speed restriction of the road it's on.
-    
-Movement:
-The vehicle moves forward at its adjusted speed, which is the minimum of its desired speed and the current speed restriction.
-    
-Destination Reached:
-Once a vehicle reaches its destination, it selects a new random destination from its current node's neighbors.
-The vehicle then moves towards the new destination, updating its speed restriction based on the new road, repeating the process.
+## THINGS TO TRY
 
-## Model Parameters:
+(suggested things for the user to try to do (move sliders, switches, etc.) with the model)
 
-Number of Nodes: Controls the size of the network.
-Number of Vehicles: Determines the number of vehicles in the simulation.
-Base Vehicle Speed: Sets the maximum speed of vehicles.
-Traffic Sensitivity: Controls how strongly vehicles react to traffic conditions.
-Road Speed Limits: Determines the maximum speed limit for each road in the network.
+## EXTENDING THE MODEL
 
-Visualizations:
+(suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
 
-Network Visualization: Visualize the network topology with nodes and links.The color and the thickness of the road indicates the road speed. 
-Vehicle Trajectories: Track the movement of vehicles over time.
-Traffic Density: Visualize the density of vehicles on different parts of the network.
-Speed Variations: Show how vehicle speeds change in response to traffic conditions.
+## NETLOGO FEATURES
 
-## Extensions used
+(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
 
-Network extention nw
+## RELATED MODELS
+
+(models in the NetLogo Models Library and elsewhere which are of related interest)
+
+## CREDITS AND REFERENCES
+
+(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
 @#$#@#$#@
 default
 true
@@ -395,6 +310,22 @@ Polygon -7500403 true true 135 105 90 60 45 45 75 105 135 135
 Polygon -7500403 true true 165 105 165 135 225 105 255 45 210 60
 Polygon -7500403 true true 135 90 120 45 150 15 180 45 165 90
 
+sheep
+false
+15
+Circle -1 true true 203 65 88
+Circle -1 true true 70 65 162
+Circle -1 true true 150 105 120
+Polygon -7500403 true false 218 120 240 165 255 165 278 120
+Circle -7500403 true false 214 72 67
+Rectangle -1 true true 164 223 179 298
+Polygon -1 true true 45 285 30 285 30 240 15 195 45 210
+Circle -1 true true 3 83 150
+Rectangle -1 true true 65 221 80 296
+Polygon -1 true true 195 285 210 285 210 240 240 210 195 210
+Polygon -7500403 true false 276 85 285 105 302 99 294 83
+Polygon -7500403 true false 219 85 210 105 193 99 201 83
+
 square
 false
 0
@@ -479,6 +410,13 @@ Line -7500403 true 40 84 269 221
 Line -7500403 true 40 216 269 79
 Line -7500403 true 84 40 221 269
 
+wolf
+false
+0
+Polygon -16777216 true false 253 133 245 131 245 133
+Polygon -7500403 true true 2 194 13 197 30 191 38 193 38 205 20 226 20 257 27 265 38 266 40 260 31 253 31 230 60 206 68 198 75 209 66 228 65 243 82 261 84 268 100 267 103 261 77 239 79 231 100 207 98 196 119 201 143 202 160 195 166 210 172 213 173 238 167 251 160 248 154 265 169 264 178 247 186 240 198 260 200 271 217 271 219 262 207 258 195 230 192 198 210 184 227 164 242 144 259 145 284 151 277 141 293 140 299 134 297 127 273 119 270 105
+Polygon -7500403 true true -1 195 14 180 36 166 40 153 53 140 82 131 134 133 159 126 188 115 227 108 236 102 238 98 268 86 269 92 281 87 269 103 269 113
+
 x
 false
 0
@@ -487,8 +425,6 @@ Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
 NetLogo 6.4.0
 @#$#@#$#@
-random-seed 2
-setup
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
