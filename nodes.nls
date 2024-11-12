@@ -1,0 +1,23 @@
+; Define the breed for nodes
+breed [nodes node]
+
+; Initialize nodes
+to nodes-init [number-of-nodes]
+  nw:generate-preferential-attachment nodes links number-of-nodes 2  ; Uses network extention creates random netwrk with low connectivity
+  [ 
+    set color blue  ; Set the color of the nodes
+    set shape "circle" ; Set the shape of the nodes
+    set size 0.4 ; Set the size of the nodes
+  ]
+  ;; Lay out the nodes so links are not overlapping
+  repeat 1800 [ layout ]
+  ;; Leave space around the edges
+  ask nodes [ setxy 0.95 * xcor 0.95 * ycor ]
+end
+
+
+; Lay out the nodes using a spring layout algorithm
+to layout
+  layout-spring nodes links 0.01 1 1
+end
+
