@@ -112,8 +112,8 @@ SLIDER
 number_of_nodes
 number_of_nodes
 5
-50
-30.0
+100
+27.0
 1
 1
 NIL
@@ -128,7 +128,7 @@ number_of_vehicles
 number_of_vehicles
 2
 100
-60.0
+100.0
 1
 1
 NIL
@@ -168,7 +168,7 @@ HORIZONTAL
 # A Simple Network-Based Vehicle Simulation
 
 ## Abstract:
-This NetLogo model simulates a simple network of nodes and vehicles. Vehicles move between nodes along the network's edges, following a random path. The model incorporates traffic-aware speed control and local speed restrictions to provide a more realistic simulation of traffic flow and congestion..
+This NetLogo model simulates a simple network of nodes and vehicles. Vehicles move between nodes along the network's edges, following the shortest path to anther a random node destination. The model incorporates traffic-aware speed control and local speed restrictions to provide a more realistic simulation of traffic flow and congestion..
 
 ## Model Description:
 
