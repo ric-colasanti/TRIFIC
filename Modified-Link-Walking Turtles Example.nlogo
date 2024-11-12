@@ -14,9 +14,14 @@ end
 
 ; Advance the simulation by one tick
 to go
+  let flag true
   ask vehicles [
     vehicles-move ; Move the vehicles
+    if moving = true[
+      set flag false
+    ]
   ]
+  if flag = true [ stop ]
   tick ; Advance the tick counter
 end
 
@@ -112,8 +117,8 @@ SLIDER
 number_of_nodes
 number_of_nodes
 5
-100
-27.0
+50
+30.0
 1
 1
 NIL
@@ -158,7 +163,7 @@ slowest-vehicle
 slowest-vehicle
 0.1
 1.0
-0.1
+0.5
 0.1
 1
 NIL

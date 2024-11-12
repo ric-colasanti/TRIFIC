@@ -9,6 +9,7 @@ vehicles-own [
   journey            ; Total distance of the current journey
   remaing-journey     ; Remaining distance of the current journey
   trip                ; the path to utimate destination
+  moving              ; if vehicle is moving
 ]
 
 to vehicles-init [number-of-vehicles]
@@ -39,11 +40,13 @@ to vehicles-init [number-of-vehicles]
       set speed top-speed                  ; Set initial speed to maximum speed
       set remaing-journey journey   ; Set initial remaining journey
     ]
+    set moving true
   ]
 end
 
 to vehicles-move
-  if not empty? trip [
+  ifelse not empty? trip [
+    set moving true
   let visible-neighbors (other turtles in-cone 0.2 10) ; Identify nearby vehicles
   let ahead nearest-vehicle-traverling-in-same-direction ; Find the nearest vehicle ahead
 
@@ -85,6 +88,8 @@ if speed > speed-restriction [
 
   ; Enforce speed limit
   
+  ][
+    set moving false
   ]
 end
 

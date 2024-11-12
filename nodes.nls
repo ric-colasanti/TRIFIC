@@ -10,7 +10,7 @@ roads-own [
 
 ; Initialize nodes
 to nodes-init [number-of-nodes]
-  nw:generate-preferential-attachment nodes roads number-of-nodes 2  ; Uses network extention creates random netwrk with low connectivity
+  nw:generate-preferential-attachment nodes roads number-of-nodes 1  ; Uses network extention creates random netwrk with low connectivity
   [ 
     set color blue  ; Set the color of the nodes
     set shape "circle" ; Set the shape of the nodes
