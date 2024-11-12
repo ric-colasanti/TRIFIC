@@ -17,7 +17,7 @@ to nodes-init [number-of-nodes]
     set size 0.4 ; Set the size of the nodes
   ]
   ;; Lay out the nodes so links are not overlapping
-  repeat 5000 [ layout ]
+  repeat 500 [ layout ]
   ;; Leave space around the edges
   ask nodes [ setxy 0.95 * xcor 0.95 * ycor ]
   
