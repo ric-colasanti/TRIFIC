@@ -113,7 +113,7 @@ number_of_nodes
 number_of_nodes
 5
 50
-50.0
+21.0
 1
 1
 NIL
@@ -128,7 +128,7 @@ number_of_vehicles
 number_of_vehicles
 2
 100
-100.0
+50.0
 1
 1
 NIL
