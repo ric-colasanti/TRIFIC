@@ -7,8 +7,8 @@ vehicles-own [
   speed               ; Current speed of the vehicle
   speed-restriction   ; Local speed restriction
   journey            ; Total distance of the current journey
-  remaing-journey     ; Remaining distance of the current journey
-  trip                ; the path to utimate destination
+  remaining-journey     ; Remaining distance of the current journey
+  trip                ; the path to ultimate destination
   moving              ; if vehicle is moving
 ]
 
@@ -16,43 +16,64 @@ to vehicles-init [number-of-vehicles]
   create-vehicles number-of-vehicles [
     set color lime                     ; Set vehicle color
     set shape "default"               ; Set vehicle shape
-    let new-location one-of nodes     ; select a starting point
-    
-    ; select a diferent destination
+    let new-location one-of nodes     ; Select a random starting point
+
+    ; Select a different destination
     let new-destination new-location  
     while [ new-destination = new-location ] [   
       set new-destination one-of nodes
     ]
     
-    ; find the shortest path from staring point to destination taking into account distance
+    ; Find the shortest path from starting point to destination
     let new-trip 0
     ask new-location [ set new-trip nw:weighted-path-to new-destination distance_to_destination ]
     set trip new-trip
-    
-    if not empty? trip [
-      set-destination new-location ;new-journey; new-road 
-      set top-speed ( random-float ( 1.0 - slowest-vehicle ) ) + slowest-vehicle  ; Set random maximum speed
-      set speed top-speed                  ; Set initial speed to maximum speed
-      set remaing-journey journey   ; Set initial remaining journey
-    ]
+   
+    set-destination new-location ; Set initial destination and journey
+    set top-speed ( random-float ( 1.0 - slowest-vehicle ) ) + slowest-vehicle  ; Set random maximum speed
+    set speed top-speed                  ; Set initial speed to maximum speed
+    set remaining-journey journey   ; Set initial remaining journey
+ 
     set moving true
   ]
 end
 
 to vehicles-move
-  ifelse not empty? trip [ ; if empty the trip has ended
+  ifelse not empty? trip [ ; If the vehicle still has a destination
     set moving true
-    let visible-neighbors (other turtles in-cone 0.2 10) ; Identify nearby vehicles
-    let ahead nearest-vehicle-traverling-in-same-direction ; Find the nearest vehicle ahead
-
-    ; Adjust speed based on traffic conditions
+    ;; set default speed
     set speed top-speed
     set color lime
-    if ahead != nobody [
-      ifelse distance ahead < speed [
+    
+    ; see what vehicles there ar ahead
+    check-ahead
+    
+    move-at-correct-speed
+    
+    ; If the vehicle reaches end of road sart on the next road of the trip if there is one
+    if distance location >= journey [
+      let difference distance location - journey ; Calculate remaining distance
+      set-destination destination 
+      set speed difference
+      check-ahead  
+      move-at-correct-speed 
+    ] 
+  ][
+    set moving false
+  ]
+end
+
+to check-ahead
+  let ahead nearest-vehicle-traverling-in-same-direction
+  ; if ther is a vehicle ahead
+  if ahead != nobody [
+      ; check if it is close
+      ifelse distance ahead < speed [  
         set speed 0 ; Stop if too close
         set color red ; Indicate stopped
       ][
+        ;; if it is not too close check if it is near
+        ;; if it is set speed to that of the close vehicle
         if distance ahead < 2 * speed [
           let ahead-speed [speed] of ahead ; Get the speed of the vehicle ahead
           if ahead-speed <= speed [
@@ -62,42 +83,36 @@ to vehicles-move
         ]
       ]
     ]
-    if speed > speed-restriction [
-      set speed speed-restriction
-    ]
-
-    fd speed ; Move forward
-    set remaing-journey distance destination ; Update remaining journey distance
-  ; If the vehicle reaches its destination, find a new one
-    if distance location >= journey [
-      let difference distance location - journey ; Calculate remaining distance
-      set-destination destination 
-      set speed difference 
-       if speed > speed-restriction [
-         set speed speed-restriction
-      ]
-
-      fd speed ; Move forward
-      set remaing-journey distance destination ; Update remaining journey distance
-    ] 
-    ][
-      set moving false
-    ]
 end
 
+to move-at-correct-speed
+  ; check if the speed of the vehcile is greater than the speed limmit for the road
+  if speed > speed-restriction [
+         set speed speed-restriction
+  ]
+  fd speed ; Move forward
+  set remaining-journey distance destination ; Update remaining journey distance
+end
+
+
+;returns the nearest vehicle that is traveling in the same direction as the calling vehicle and 
+;;has a shorter remaining journey to its destination. It does this by filtering other vehicles 
+;;based on having the same destination, a shorter remaining journey, and the same heading. 
+;;It then reports the minimum distance to the nearest vehicle that meets all these conditions. 
 to-report nearest-vehicle-traverling-in-same-direction
   report min-one-of other vehicles with [  
     destination = [destination] of myself and  ; Same destination
-    remaing-journey < [remaing-journey] of myself and  ; Shorter remaining journey
+    remaining-journey < [remaining-journey] of myself and  ; Shorter remaining journey
     heading = [heading] of myself ; Same direction
-  ] [distance myself]
+  ] [distance myself] ; and is nearest
 end
 
 to set-destination [new-location]
   let new-road first trip
   set trip but-first trip
   let new-destination 0
-  ;select the correct end of the road for the new destination
+  
+  ; Select the correct end of the road for the new destination
   ask  new-road [  
       ifelse end1 = new-location[
          set new-destination end2
