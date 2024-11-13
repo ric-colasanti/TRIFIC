@@ -6,9 +6,9 @@ vehicles-own [
   top-speed           ; Maximum speed of the vehicle
   speed               ; Current speed of the vehicle
   speed-restriction   ; Local speed restriction
-  journey            ; Total distance of the current journey
-  remaining-journey     ; Remaining distance of the current journey
-  trip                ; the path to ultimate destination
+  progress            ; Total distance of the current progress on a road
+  remaining-progress     ; Remaining distance of the current progress on the road
+  trip                ; the path to ultimate destination is a list of roads
   moving              ; if vehicle is moving
 ]
 
@@ -29,10 +29,10 @@ to vehicles-init [number-of-vehicles]
     ask new-location [ set new-trip nw:weighted-path-to new-destination distance_to_destination ]
     set trip new-trip
    
-    set-destination new-location ; Set initial destination and journey
+    set-destination new-location ; Set initial destination and progress
     set top-speed ( random-float ( 1.0 - slowest-vehicle ) ) + slowest-vehicle  ; Set random maximum speed
     set speed top-speed                  ; Set initial speed to maximum speed
-    set remaining-journey journey   ; Set initial remaining journey
+    set remaining-progress progress   ; Set initial remaining progress
  
     set moving true
   ]
@@ -51,8 +51,8 @@ to vehicles-move
     move-at-correct-speed
     
     ; If the vehicle reaches end of road sart on the next road of the trip if there is one
-    if distance location >= journey [
-      let difference distance location - journey ; Calculate remaining distance
+    if distance location >= progress [
+      let difference distance location - progress ; Calculate remaining distance
       set-destination destination 
       set speed difference
       check-ahead  
@@ -91,18 +91,18 @@ to move-at-correct-speed
          set speed speed-restriction
   ]
   fd speed ; Move forward
-  set remaining-journey distance destination ; Update remaining journey distance
+  set remaining-progress distance destination ; Update remaining progress distance
 end
 
 
 ;returns the nearest vehicle that is traveling in the same direction as the calling vehicle and 
-;;has a shorter remaining journey to its destination. It does this by filtering other vehicles 
-;;based on having the same destination, a shorter remaining journey, and the same heading. 
+;;has a shorter remaining progress to its destination. It does this by filtering other vehicles 
+;;based on having the same destination, a shorter remaining progress, and the same heading. 
 ;;It then reports the minimum distance to the nearest vehicle that meets all these conditions. 
 to-report nearest-vehicle-traverling-in-same-direction
   report min-one-of other vehicles with [  
     destination = [destination] of myself and  ; Same destination
-    remaining-journey < [remaining-journey] of myself and  ; Shorter remaining journey
+    remaining-progress < [remaining-progress] of myself and  ; Shorter remaining progress
     heading = [heading] of myself ; Same direction
   ] [distance myself] ; and is nearest
 end
@@ -125,5 +125,5 @@ to set-destination [new-location]
   set destination new-destination
   move-to location                   ; Move to the new location
   face destination                   ; Face the new destination
-  set journey distance destination
+  set progress distance destination
 end

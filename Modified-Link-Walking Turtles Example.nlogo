@@ -191,7 +191,7 @@ Details
 
 * **Nodes:** Nodes represent intersections in the road network. They have a position on the grid. They also have a list of links connected to them.
 * **Links:** Links represent roads between intersections. They have a distance to the destination, a speed limit, a color, and a thickness.
-* **Vehicles:** Vehicles represent individual agents moving on the road network. They have a position on the grid, a color, a shape, and a size. They also have a maximum speed, a current speed, a local speed restriction, a journey distance, a remaining journey distance, a path to the ultimate destination, and a flag indicating whether they are moving.The color of the vehicles indicates if they are stoped (red) or held up behind slowere vehicle ( orange) 
+* **Vehicles:** Vehicles represent individual agents moving on the road network. They have a position on the grid, a color, a shape, and a size. They also have a maximum speed, a current speed, a local speed restriction, a progress distance, a remaining progress distance, a path to the ultimate destination, and a flag indicating whether they are moving.The color of the vehicles indicates if they are stoped (red) or held up behind slowere vehicle ( orange) 
 
 ### Process Overview and Scheduling
 
@@ -199,7 +199,7 @@ The model operates in two main procedures: `setup` and `go`. `Setup` initializes
 
 ### Initialization
 
-At the beginning of the simulation, the `setup` procedure initializes the nodes and vehicles. The `nodes-init` procedure generates a random network of nodes and links using the network extension. It then sets the links. The `vehicles-init` procedure creates a specified number of vehicles and assigns them random starting points and destinations. It also calculates the shortest path between the starting point and destination and sets the initial speed and remaining journey distance.
+At the beginning of the simulation, the `setup` procedure initializes the nodes and vehicles. The `nodes-init` procedure generates a random network of nodes and links using the network extension. It then sets the links. The `vehicles-init` procedure creates a specified number of vehicles and assigns them random starting points and destinations. It also calculates the shortest path between the starting point and destination and sets the initial speed and remaining progress distance.
 
 ### Input
 
