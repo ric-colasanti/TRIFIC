@@ -148,7 +148,7 @@ restricted-road-speed
 restricted-road-speed
 0.1
 1
-0.2
+0.3
 0.1
 1
 NIL

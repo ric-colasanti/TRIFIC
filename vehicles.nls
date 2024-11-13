@@ -16,26 +16,21 @@ to vehicles-init [number-of-vehicles]
   create-vehicles number-of-vehicles [
     set color lime                     ; Set vehicle color
     set shape "default"               ; Set vehicle shape
-    let new-location one-of nodes
-    let new-destination new-location
-    while [ new-destination = new-location ] [
+    let new-location one-of nodes     ; select a starting point
+    
+    ; select a diferent destination
+    let new-destination new-location  
+    while [ new-destination = new-location ] [   
       set new-destination one-of nodes
     ]
     
-    ;write new-location
-    ;write new-destination
+    ; find the shortest path from staring point to destination taking into account distance
     let new-trip 0
     ask new-location [ set new-trip nw:weighted-path-to new-destination distance_to_destination ]
-    let new-road 0
     set trip new-trip
-   
-    ; Assign a random destination and road to the vehicle
-    ask new-location [
-      set new-road one-of my-roads
-    ]
+    
     if not empty? trip [
       set-destination new-location ;new-journey; new-road 
-
       set top-speed ( random-float ( 1.0 - slowest-vehicle ) ) + slowest-vehicle  ; Set random maximum speed
       set speed top-speed                  ; Set initial speed to maximum speed
       set remaing-journey journey   ; Set initial remaining journey
@@ -45,52 +40,49 @@ to vehicles-init [number-of-vehicles]
 end
 
 to vehicles-move
-  ifelse not empty? trip [
+  ifelse not empty? trip [ ; if empty the trip has ended
     set moving true
-  let visible-neighbors (other turtles in-cone 0.2 10) ; Identify nearby vehicles
-  let ahead nearest-vehicle-traverling-in-same-direction ; Find the nearest vehicle ahead
+    let visible-neighbors (other turtles in-cone 0.2 10) ; Identify nearby vehicles
+    let ahead nearest-vehicle-traverling-in-same-direction ; Find the nearest vehicle ahead
 
-  ; Adjust speed based on traffic conditions
-  set speed top-speed
-  set color lime
-  if ahead != nobody [
-    ifelse distance ahead < speed [
-      set speed 0 ; Stop if too close
-      set color red ; Indicate stopped
-    ] [
-      if distance ahead < 2 * speed [
-        let ahead-speed [speed] of ahead ; Get the speed of the vehicle ahead
-        if ahead-speed <= speed [
-          set speed ahead-speed  ; Reduce speed to avoid collision
+    ; Adjust speed based on traffic conditions
+    set speed top-speed
+    set color lime
+    if ahead != nobody [
+      ifelse distance ahead < speed [
+        set speed 0 ; Stop if too close
+        set color red ; Indicate stopped
+      ][
+        if distance ahead < 2 * speed [
+          let ahead-speed [speed] of ahead ; Get the speed of the vehicle ahead
+          if ahead-speed <= speed [
+            set speed ahead-speed  ; Reduce speed to avoid collision
+          ]
+          set color orange ; Indicate reduced speed
         ]
-        set color orange ; Indicate reduced speed
       ]
     ]
-  ]
-if speed > speed-restriction [
-    set speed speed-restriction
-  ]
+    if speed > speed-restriction [
+      set speed speed-restriction
+    ]
 
-  fd speed ; Move forward
-  set remaing-journey distance destination ; Update remaining journey distance
+    fd speed ; Move forward
+    set remaing-journey distance destination ; Update remaining journey distance
   ; If the vehicle reaches its destination, find a new one
-  if distance location >= journey [
-    let difference distance location - journey ; Calculate remaining distance
-    set-destination destination 
-    set speed difference 
-      if speed > speed-restriction [
-    set speed speed-restriction
-  ]
+    if distance location >= journey [
+      let difference distance location - journey ; Calculate remaining distance
+      set-destination destination 
+      set speed difference 
+       if speed > speed-restriction [
+         set speed speed-restriction
+      ]
 
-  fd speed ; Move forward
-  set remaing-journey distance destination ; Update remaining journey distance
-  ]
-
-  ; Enforce speed limit
-  
-  ][
-    set moving false
-  ]
+      fd speed ; Move forward
+      set remaing-journey distance destination ; Update remaining journey distance
+    ] 
+    ][
+      set moving false
+    ]
 end
 
 to-report nearest-vehicle-traverling-in-same-direction
