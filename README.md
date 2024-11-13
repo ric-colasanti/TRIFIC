@@ -20,10 +20,12 @@ Vehicles: A specified number of vehicles are created and assigned to random node
 Vehicle Movement:
 
 Speed Adjustment:
+
 Each vehicle checks for other vehicles ahead on its current path.
 If another vehicle is detected within a certain distance, the current vehicle reduces its speed to avoid a collision.
 The amount of speed reduction depends on the distance to the vehicle ahead.
 The vehicle's speed is also constrained by the current speed restriction of the road it's on.
+
 Overview
 --------
 
