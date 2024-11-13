@@ -191,7 +191,7 @@ Details
 
 * **Nodes:** Nodes represent intersections in the road network. They have a position on the grid. They also have a list of links connected to them.
 * **Links:** Links represent roads between intersections. They have a distance to the destination, a speed limit, a color, and a thickness.
-* **Vehicles:** Vehicles represent individual agents moving on the road network. They have a position on the grid, a color, a shape, and a size. They also have a maximum speed, a current speed, a local speed restriction, a journey distance, a remaining journey distance, a path to the ultimate destination, and a flag indicating whether they are moving.The color of the vehicles indicates if they are stoped (red) or held up behind slowere vehicle ( orange) 
+* **Vehicles:** Vehicles represent individual agents moving on the road network. They have a position on the grid, a color, a shape, and a size. They also have a maximum speed, a current speed, a local speed restriction, a journey distance, a remaining journey distance, a path to the ultimate destination, and a flag indicating whether they are moving.T
 
 ### Process Overview and Scheduling
 
