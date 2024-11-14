@@ -51,8 +51,8 @@ to setup
         set link-distance distance t2
         create-road-with t2 [
            set r-id item 0 row
-           set thickness 2
-        set color red
+           set thickness 0.5
+        set color gray
           set distance_to_destination link-distance
         ]
       ]
