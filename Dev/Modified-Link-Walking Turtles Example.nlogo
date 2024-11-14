@@ -6,7 +6,8 @@ __includes ["vehicles.nls" "nodes.nls"]
 ; Set up the simulation
 to setup
   clear-all ; Clear any existing data
-  nodes-init number_of_nodes ; Initialize nodes
+  ;nodes-init number_of_nodes ; Initialize nodes
+  load-network
   vehicles-init number_of_vehicles ; Initialize vehicles
   reset-ticks ; Reset the tick counter
 end
@@ -34,11 +35,11 @@ end
 GRAPHICS-WINDOW
 325
 25
-828
-529
+975
+676
 -1
 -1
-15.0
+2.0
 1
 10
 1
@@ -48,10 +49,10 @@ GRAPHICS-WINDOW
 0
 0
 1
--16
-16
--16
-16
+0
+320
+0
+320
 1
 1
 1
