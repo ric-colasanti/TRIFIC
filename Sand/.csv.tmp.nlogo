@@ -1,44 +1,77 @@
-; Include any necessary libraries
-extensions [ nw ]
-__includes ["vehicles.nls" "nodes.nls"]
+extensions [ csv ]
+
+breed [nodes node]
+undirected-link-breed [ roads road ]
+
+nodes-own[
+  n-id
+  n-xpos
+  n-ypos
+]
+
+roads-own [
+  r-id
+  distance_to_destination
+  speed_limmit
+]
 
 
-; Set up the simulation
+
+
 to setup
-  clear-all ; Clear any existing data
-  nodes-init number_of_nodes ; Initialize nodes
-  vehicles-init number_of_vehicles ; Initialize vehicles
-  reset-ticks ; Reset the tick counter
-end
+  clear-all
+  let csv-data csv:from-file "node_list.csv"
 
-
-; Advance the simulation by one tick
-to go
-  let flag true
-  ask vehicles [
-    vehicles-move ; Move the vehicles
-    if moving = true[
-      set flag false
-    ]
+  let header-row first csv-data
+  let data-rows butfirst csv-data
+  foreach data-rows [
+    row ->
+    create-nodes 1 [
+      set n-id (item 0 row )
+      set n-xpos  item 1 row  * 320
+      set n-ypos  item 2 row  * 320
+      set shape "circle"
+      set size 1
+      set color blue
+      setxy n-xpos n-ypos
+   ]
   ]
-  if flag = true [ stop ]
-  tick ; Advance the tick counter
+
+  set csv-data csv:from-file "link_list.csv"
+
+  set header-row first csv-data
+  set data-rows butfirst csv-data
+  foreach data-rows [
+    row ->
+      let link-distance 0
+      let t1   one-of nodes with [ n-id = item 1 row ]
+      let t2   one-of nodes with [ n-id = item 2 row ]
+    ifelse t1 != nobody and t2 != nobody [
+      ask t1 [
+        set link-distance distance t2
+        create-road-with t2 [
+           set r-id item 0 row
+           set thickness 2
+        set color red
+          set distance_to_destination link-distance
+        ]
+      ]
+    ][
+
+  ]
+
+
+
 end
-
-
-; Public Domain:
-; adapted from code by Uri Wilensky
-; To the extent possible under law, ric colasanti has waived all
-; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
-325
-25
-795
-496
+210
+10
+860
+661
 -1
 -1
-14.0
+2.0
 1
 10
 1
@@ -48,21 +81,21 @@ GRAPHICS-WINDOW
 0
 0
 1
--16
-16
--16
-16
-1
-1
+0
+320
+0
+320
+0
+0
 1
 ticks
 30.0
 
 BUTTON
-27
-25
-111
-58
+59
+47
+126
+80
 NIL
 setup
 NIL
@@ -75,153 +108,42 @@ NIL
 NIL
 1
 
-BUTTON
-27
-95
-111
-128
-NIL
-go
-T
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-0
-
-BUTTON
-27
-60
-111
-93
-go once
-go
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-0
-
-SLIDER
-120
-25
-310
-58
-number_of_nodes
-number_of_nodes
-5
-50
-30.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-117
-64
-312
-97
-number_of_vehicles
-number_of_vehicles
-2
-100
-100.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-118
-103
-312
-136
-restricted-road-speed
-restricted-road-speed
-0.1
-1
-0.3
-0.1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-116
-142
-311
-175
-slowest-vehicle
-slowest-vehicle
-0.1
-1.0
-0.5
-0.1
-1
-NIL
-HORIZONTAL
-
 @#$#@#$#@
-Overview
---------
+## WHAT IS IT?
 
-This is a NetLogo model that simulates the movement of vehicles on a road network. The model includes two types of agents: nodes and vehicles. Nodes represent intersections in the road network, and vehicles move along the links between nodes. The model includes features such as speed limits, random maximum speeds for vehicles, and collision avoidance.
+(a general understanding of what the model is trying to show or explain)
 
-Design Concepts
----------------
+## HOW IT WORKS
 
-* **Spatial Extent:** The model is defined on a two-dimensional grid, with nodes and links representing intersections and roads, respectively.
-* **Temporal Extent:** The model operates in discrete time steps, or ticks. At each tick, vehicles move along the links between nodes and update their speed based on local conditions.
-* **Stochasticity:** The model includes randomness in the form of random maximum speeds for vehicles and the selection of destinations.
-* **Collectives:** The model simulates the collective behavior of vehicles moving on a road network.
-* **Observation:** The model includes a visualization of the road network and the movement of vehicles.
+(what rules the agents use to create the overall behavior of the model)
 
-Details
--------
+## HOW TO USE IT
 
-### Entities, States, and Variables
+(how to use the model, including a description of each of the items in the Interface tab)
 
-* **Nodes:** Nodes represent intersections in the road network. They have a position on the grid. They also have a list of links connected to them.
-* **Links:** Links represent roads between intersections. They have a distance to the destination, a speed limit, a color, and a thickness.
-* **Vehicles:** Vehicles represent individual agents moving on the road network. They have a position on the grid, a color, a shape, and a size. They also have a maximum speed, a current speed, a local speed restriction, a  distance, a remaining journey distance, a path to the ultimate destination, and a flag indicating whether they are moving.The color of the vehicles indicates if they are stoped (red) or held up behind slowere vehicle ( orange) 
+## THINGS TO NOTICE
 
-### Process Overview and Scheduling
+(suggested things for the user to notice while running the model)
 
-The model operates in two main procedures: `setup` and `go`. `Setup` initializes the nodes and vehicles, and `go` advances the simulation by one tick.
+## THINGS TO TRY
 
-### Initialization
+(suggested things for the user to try to do (move sliders, switches, etc.) with the model)
 
-At the beginning of the simulation, the `setup` procedure initializes the nodes and vehicles. The `nodes-init` procedure generates a random network of nodes and links using the network extension. It then sets the links. The `vehicles-init` procedure creates a specified number of vehicles and assigns them random starting points and destinations. It also calculates the shortest path between the starting point and destination and sets the initial speed and remaining journey distance.
+## EXTENDING THE MODEL
 
-### Input
+(suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
 
-The user can specify the number of nodes and vehicles in the model by setting the `number_of_nodes` and `number_of_vehicles` sliders in the interface.
+## NETLOGO FEATURES
 
-### Submodels
+(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
 
-The `go` procedure advances the simulation by one tick. It first checks whether any vehicles have reached their destinations and stops them if they have. It then moves the remaining vehicles along the links between nodes and updates their speed based on local conditions.
+## RELATED MODELS
 
-The `check-ahead` procedure checks whether there are any vehicles ahead of the calling vehicle and adjusts its speed accordingly. The `move-at-correct-speed` procedure checks whether the speed of the vehicle is greater than the speed limit for the road and adjusts it if necessary.
+(models in the NetLogo Models Library and elsewhere which are of related interest)
 
-### Output
+## CREDITS AND REFERENCES
 
-The model includes a visualization of the road network and the movement of vehicles. The user can observe the behavior of the vehicles and the impact of different parameters on their movement.
-
-### Design Concepts
-
-* **Spatial Extent:** The model is defined on a two-dimensional grid, with nodes and links representing intersections and roads, respectively.
-* **Temporal Extent:** The model operates in discrete time steps, or ticks. At each tick, vehicles move along the links between nodes and update their speed based on local conditions.
-* **Stochasticity:** The model includes randomness in the form of random maximum speeds for vehicles and the selection of destinations.
-* **Collectives:** The model simulates the collective behavior of vehicles moving on a road network.
-* **Observation:** The model includes a visualization of the road network and the movement of vehicles.
+(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
 @#$#@#$#@
 default
 true
@@ -415,6 +337,22 @@ Polygon -7500403 true true 135 105 90 60 45 45 75 105 135 135
 Polygon -7500403 true true 165 105 165 135 225 105 255 45 210 60
 Polygon -7500403 true true 135 90 120 45 150 15 180 45 165 90
 
+sheep
+false
+15
+Circle -1 true true 203 65 88
+Circle -1 true true 70 65 162
+Circle -1 true true 150 105 120
+Polygon -7500403 true false 218 120 240 165 255 165 278 120
+Circle -7500403 true false 214 72 67
+Rectangle -1 true true 164 223 179 298
+Polygon -1 true true 45 285 30 285 30 240 15 195 45 210
+Circle -1 true true 3 83 150
+Rectangle -1 true true 65 221 80 296
+Polygon -1 true true 195 285 210 285 210 240 240 210 195 210
+Polygon -7500403 true false 276 85 285 105 302 99 294 83
+Polygon -7500403 true false 219 85 210 105 193 99 201 83
+
 square
 false
 0
@@ -499,6 +437,13 @@ Line -7500403 true 40 84 269 221
 Line -7500403 true 40 216 269 79
 Line -7500403 true 84 40 221 269
 
+wolf
+false
+0
+Polygon -16777216 true false 253 133 245 131 245 133
+Polygon -7500403 true true 2 194 13 197 30 191 38 193 38 205 20 226 20 257 27 265 38 266 40 260 31 253 31 230 60 206 68 198 75 209 66 228 65 243 82 261 84 268 100 267 103 261 77 239 79 231 100 207 98 196 119 201 143 202 160 195 166 210 172 213 173 238 167 251 160 248 154 265 169 264 178 247 186 240 198 260 200 271 217 271 219 262 207 258 195 230 192 198 210 184 227 164 242 144 259 145 284 151 277 141 293 140 299 134 297 127 273 119 270 105
+Polygon -7500403 true true -1 195 14 180 36 166 40 153 53 140 82 131 134 133 159 126 188 115 227 108 236 102 238 98 268 86 269 92 281 87 269 103 269 113
+
 x
 false
 0
@@ -507,8 +452,6 @@ Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
 NetLogo 6.4.0
 @#$#@#$#@
-random-seed 2
-setup
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -524,5 +467,5 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 @#$#@#$#@
-1
+0
 @#$#@#$#@
