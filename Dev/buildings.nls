@@ -1,0 +1,50 @@
+breed [buildings building]
+
+buildings-own[
+  b-type
+  b-xpos
+  b-ypos
+  b-id
+  nearest-node
+]
+
+to load-buildings
+  nw:set-context nodes roads
+  let csv-data csv:from-file "Data/house_list.csv"
+
+  let header-row first csv-data
+  let data-rows butfirst csv-data
+  foreach data-rows [
+    row ->
+    create-buildings 1 [
+      set b-id (item 0 row )
+      set b-xpos  item 1 row  * 320
+      set b-ypos  item 2 row  * 320
+      set shape "square"
+      set size 1.2
+      set color blue
+      setxy b-xpos b-ypos
+      set b-type  "home"
+      set nearest-node min-one-of nodes [distance myself ] 
+   ]
+  ]
+  
+  set csv-data csv:from-file "Data/building_list.csv"
+
+  set header-row first csv-data
+  set data-rows butfirst csv-data
+  foreach data-rows [
+    row ->
+    create-buildings 1 [
+      set b-id (item 0 row )
+      set b-xpos  item 1 row  * 320
+      set b-ypos  item 2 row  * 320
+      set shape "square"
+      set size 2
+      set color red
+      setxy b-xpos b-ypos
+      set b-type  "building"
+      set nearest-node min-one-of nodes [distance myself ] 
+   ]
+  ]
+end

@@ -28,8 +28,8 @@ to load-network
       set n-xpos  item 1 row  * 320
       set n-ypos  item 2 row  * 320
       set shape "circle"
-      set size 1
-      set color blue
+      set size 0.5
+      set color grey
       setxy n-xpos n-ypos
    ]
   ]

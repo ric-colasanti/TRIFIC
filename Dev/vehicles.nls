@@ -10,21 +10,23 @@ vehicles-own [
   remaining-progress     ; Remaining distance of the current progress on the road
   trip                ; the path to ultimate destination is a list of roads
   moving              ; if vehicle is moving
+  v-home
+  b-destination
 ]
 
 to vehicles-init [number-of-vehicles]
   create-vehicles number-of-vehicles [
-    set color lime                     ; Set vehicle color
+    set color 63                     ; Set vehicle color
     set shape "default"               ; Set vehicle shape
     set size 4
-    let new-location one-of nodes     ; Select a random starting point
-    ;print new-location
+    set v-home one-of buildings with [ b-type = "home" ]     ; Select a random starting point
+    let new-location  [nearest-node] of v-home
     move-to new-location
-    ; Select a different destination
-    let new-destination new-location  
-    while [ new-destination = new-location ] [   
-      set new-destination one-of nodes
-    ]
+    
+    
+    set b-destination one-of buildings with [ b-type = "building" ]
+    let new-destination  [nearest-node] of b-destination 
+    
     
     ; Find the shortest path from starting point to destination
     let new-trip 0
@@ -48,7 +50,7 @@ to vehicles-move
     set moving true
     ;; set default speed
     set speed top-speed
-    set color lime
+    set color 63
     
     ; see what vehicles there ar ahead
     check-ahead
@@ -64,9 +66,9 @@ to vehicles-move
       move-at-correct-speed 
     ] 
   ][
-    set destination nobody
+    set destination b-destination
+    move-to b-destination
     set moving false
-    hide-turtle
   ]
 end
 
