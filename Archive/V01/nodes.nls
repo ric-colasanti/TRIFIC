@@ -17,14 +17,14 @@ nodes-own[
 
 ; Initialize nodes
 to nodes-init [number-of-nodes]
-  nw:generate-preferential-attachment nodes roads number-of-nodes 1  ; Uses network extention creates random netwrk with low connectivity
+  nw:generate-ring nodes roads number-of-nodes   ; Uses network extention creates random netwrk with low connectivity
   [ 
     set color blue  ; Set the color of the nodes
     set shape "circle" ; Set the shape of the nodes
     set size 0.4 ; Set the size of the nodes
   ]
   ;; Lay out the nodes so links are not overlapping
-  repeat 500 [ layout ]
+ layout-circle sort nodes 10
   ;; Leave space around the edges
   ask nodes [ setxy 0.95 * xcor 0.95 * ycor ]
   

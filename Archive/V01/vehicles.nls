@@ -60,6 +60,7 @@ to vehicles-move
     ] 
   ][
     set moving false
+    set destination nobody
   ]
 end
 
