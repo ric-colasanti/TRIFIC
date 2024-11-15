@@ -1,5 +1,3 @@
- Sure! Here's an updated version of the ODD that includes buildings as an entity:
-
 Overview
 --------
 
