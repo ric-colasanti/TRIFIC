@@ -13,26 +13,17 @@ nodes-own[
   n-ypos
 ]
 
-;; The load-network procedure loads a road network from two CSV files: node_list.csv 
-;; and link_list.csv. The node_list.csv file contains a list of nodes with their IDs, 
-;; x-positions, and y-positions. The link_list.csv file contains a list of links 
-;; between nodes with their IDs, the IDs of the connected nodes, and the distance between the nodes.
-to load-network
-  ;; Set the network context to nodes and roads
-  nw:set-context nodes roads
 
-  ;; Load the node list from a CSV file
+
+to load-network
+  nw:set-context nodes roads
   let csv-data csv:from-file "Data/node_list.csv"
 
-  ;; Separate the header row from the data rows
   let header-row first csv-data
   let data-rows butfirst csv-data
-
-  ;; Loop through the data rows and create nodes
   foreach data-rows [
     row ->
     create-nodes 1 [
-      ;; Set the node ID, x-position, y-position, shape, size, and color
       set n-id (item 0 row )
       set n-xpos  item 1 row  * 320
       set n-ypos  item 2 row  * 320
@@ -43,21 +34,16 @@ to load-network
    ]
   ]
 
-  ;; Load the link list from a CSV file
   set csv-data csv:from-file "Data/link_list.csv"
 
-  ;; Separate the header row from the data rows
   set header-row first csv-data
   set data-rows butfirst csv-data
-
-  ;; Loop through the data rows and create links between nodes
   foreach data-rows [
     row ->
       let link-distance 0
       let t1   one-of nodes with [ n-id = item 1 row ]
       let t2   one-of nodes with [ n-id = item 2 row ]
     ifelse t1 != nobody and t2 != nobody [
-      ;; Create a road between the two nodes and set its properties
       ask t1 [
         set link-distance distance t2
         create-road-with t2 [
@@ -65,7 +51,6 @@ to load-network
           set color gray
           set distance_to_destination link-distance
           
-          ;; Set the speed limit and thickness of the road
           set speed_limmit 1.0
           set thickness speed_limmit * 0.4
         ]
@@ -76,9 +61,6 @@ to load-network
   ]
   
 end
-
-  
-
 ; Initialize nodes
 to nodes-init [number-of-nodes]
   nw:generate-preferential-attachment nodes roads number-of-nodes 1  ; Uses network extention creates random netwrk with low connectivity
