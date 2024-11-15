@@ -50,8 +50,14 @@ to load-network
            set r-id item 0 row
           set color gray
           set distance_to_destination link-distance
-          
+          let l-speed item 3 row
           set speed_limmit 1.0
+          if l-speed  = "30 mph" [
+              set speed_limmit 0.3
+          ]
+          if l-speed  = "20 mph" [
+              set speed_limmit 0.2
+          ]
           set thickness speed_limmit * 0.4
         ]
       ]
