@@ -17,7 +17,7 @@ nodes-own[
 
 to load-network
   nw:set-context nodes roads
-  let csv-data csv:from-file "Data/node_test.csv"
+  let csv-data csv:from-file "Data/node_list.csv"
 
   let header-row first csv-data
   let data-rows butfirst csv-data
@@ -34,7 +34,7 @@ to load-network
    ]
   ]
 
-  set csv-data csv:from-file "Data/link_test.csv"
+  set csv-data csv:from-file "Data/link_list.csv"
 
   set header-row first csv-data
   set data-rows butfirst csv-data

@@ -111,25 +111,10 @@ NIL
 0
 
 SLIDER
-120
+115
 25
 310
 58
-number_of_nodes
-number_of_nodes
-5
-50
-30.0
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-117
-64
-312
-97
 number_of_vehicles
 number_of_vehicles
 2
@@ -141,10 +126,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-118
-103
-312
-136
+116
+64
+310
+97
 restricted-road-speed
 restricted-road-speed
 0.1
@@ -156,10 +141,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-116
-142
-311
-175
+114
+103
+309
+136
 slowest-vehicle
 slowest-vehicle
 0.1
