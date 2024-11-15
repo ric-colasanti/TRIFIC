@@ -15,52 +15,6 @@ nodes-own[
 
 
 
-to load-network
-  nw:set-context nodes roads
-  let csv-data csv:from-file "Data/node_list.csv"
-
-  let header-row first csv-data
-  let data-rows butfirst csv-data
-  foreach data-rows [
-    row ->
-    create-nodes 1 [
-      set n-id (item 0 row )
-      set n-xpos  item 1 row  * 320
-      set n-ypos  item 2 row  * 320
-      set shape "circle"
-      set size 1
-      set color blue
-      setxy n-xpos n-ypos
-   ]
-  ]
-
-  set csv-data csv:from-file "Data/link_list.csv"
-
-  set header-row first csv-data
-  set data-rows butfirst csv-data
-  foreach data-rows [
-    row ->
-      let link-distance 0
-      let t1   one-of nodes with [ n-id = item 1 row ]
-      let t2   one-of nodes with [ n-id = item 2 row ]
-    ifelse t1 != nobody and t2 != nobody [
-      ask t1 [
-        set link-distance distance t2
-        create-road-with t2 [
-           set r-id item 0 row
-          set color gray
-          set distance_to_destination link-distance
-          
-          set speed_limmit 1.0
-          set thickness speed_limmit * 0.4
-        ]
-      ]
-    ][
-      print " missing"
-    ]
-  ]
-  
-end
 ; Initialize nodes
 to nodes-init [number-of-nodes]
   nw:generate-preferential-attachment nodes roads number-of-nodes 1  ; Uses network extention creates random netwrk with low connectivity
