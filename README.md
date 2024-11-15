@@ -11,9 +11,8 @@ Nodes: Static agents representing intersections (locations) on the Tillydrone ro
 Vehicles: Mobile agents that move between nodes. Each vehicle has a current location, a destination, a base speed, a current speed, a journey distance to its destination, and a current speed restriction based on the road it's traveling on in Tillydrone's road network.
 ## Initialization:
 
-Nodes: A specified number of nodes are created and connected using preferential attachment to form a linked network with circular paths based on Tillydrone's road network topology. The network is then laid out to avoid overlapping links.
+Nodes:The nodes form a linked network  based on Tillydrone's road network topology. The network.
 Vehicles: A specified number of vehicles are created and assigned to random nodes. Each vehicle is given a random destination node and a base speed. Additionally, the vehicle's initial speed restriction is set based on the road it starts on in Tillydrone's road network.
-
 ## Behavior:
 
 Vehicle Movement:
