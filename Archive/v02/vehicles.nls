@@ -10,39 +10,35 @@ vehicles-own [
   remaining-progress     ; Remaining distance of the current progress on the road
   trip                ; the path to ultimate destination is a list of roads
   moving              ; if vehicle is moving
-  v-home              ; home of vehcile
-  b-destination       ; the destination building for the vehcile
 ]
 
 to vehicles-init [number-of-vehicles]
   create-vehicles number-of-vehicles [
-    set color 63                     ; Set vehicle color
+    set color lime                     ; Set vehicle color
     set shape "default"               ; Set vehicle shape
     set size 4
-    let new-trip false
-    while [ new-trip = false ]  [
-       set v-home one-of buildings with [ b-type = "home" ]     ; Select a random starting point
-       let new-location  [nearest-node] of v-home
-       move-to new-location
-    
-    
-       set b-destination one-of buildings with [ b-type = "building" ]
-       let new-destination  [nearest-node] of b-destination 
-    
+    let new-location one-of nodes     ; Select a random starting point
+    ;print new-location
+    move-to new-location
+    ; Select a different destination
+    let new-destination new-location  
+    while [ new-destination = new-location ] [   
+      set new-destination one-of nodes
+    ]
     
     ; Find the shortest path from starting point to destination
-    
-       ask new-location [ set new-trip nw:weighted-path-to new-destination distance_to_destination ]
-    
-       set trip new-trip
+    let new-trip 0
+    ask new-location [ set new-trip nw:weighted-path-to new-destination distance_to_destination ]
+    if new-trip != False [
+    set trip new-trip
    
-       set-destination new-location ; Set initial destination and progress
-    
-       set top-speed ( random-float ( run-speed - slowest-vehicle ) ) + ( run-speed * slowest-vehicle ) ; Set random maximum speed
-       set speed top-speed                  ; Set initial speed to maximum speed
-       set remaining-progress progress   ; Set initial remaining progress
+    set-destination new-location ; Set initial destination and progress
+    ]
+    set top-speed ( random-float ( 1.0 - slowest-vehicle ) ) + slowest-vehicle  ; Set random maximum speed
+    set speed top-speed                  ; Set initial speed to maximum speed
+    set remaining-progress progress   ; Set initial remaining progress
  
-    ] 
+    set moving false
     
   ]
 end
@@ -52,7 +48,7 @@ to vehicles-move
     set moving true
     ;; set default speed
     set speed top-speed
-    set color 63
+    set color lime
     
     ; see what vehicles there ar ahead
     check-ahead
@@ -68,9 +64,9 @@ to vehicles-move
       move-at-correct-speed 
     ] 
   ][
-    set destination b-destination
-    move-to b-destination
+    set destination nobody
     set moving false
+    hide-turtle
   ]
 end
 
