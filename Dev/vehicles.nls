@@ -64,7 +64,9 @@ to vehicles-move
       move-at-correct-speed 
     ] 
   ][
+    set destination nobody
     set moving false
+    hide-turtle
   ]
 end
 
