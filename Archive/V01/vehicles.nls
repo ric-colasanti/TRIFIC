@@ -10,6 +10,7 @@ vehicles-own [
   remaining-progress     ; Remaining distance of the current progress on the road
   trip                ; the path to ultimate destination is a list of roads
   moving              ; if vehicle is moving
+  v-id
 ]
 
 to vehicles-init [number-of-vehicles]
@@ -25,6 +26,7 @@ to vehicles-init [number-of-vehicles]
     while [ new-destination = new-location ] [   
       set new-destination one-of nodes
     ]
+    set v-id 1
     
     ; Find the shortest path from starting point to destination
     let new-trip 0
@@ -109,12 +111,15 @@ to-report nearest-vehicle-traverling-in-same-direction
 end
 
 to set-destination [new-location]
+  
   let new-road first trip
   set trip but-first trip
   let new-destination 0
   
+  
   ; Select the correct end of the road for the new destination
   ask  new-road [  
+    add-vehicle myself
       ifelse end1 = new-location[
          set new-destination end2
       ][

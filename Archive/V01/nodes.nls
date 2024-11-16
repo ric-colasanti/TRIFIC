@@ -5,6 +5,7 @@ roads-own [
   r-id
   distance_to_destination
   speed_limmit
+  occupants
 ]
 
 nodes-own[
@@ -32,6 +33,7 @@ to nodes-init [number-of-nodes]
     let turtle1 end1
     let turtle2 end2
     let link-distance 0  
+    set occupants []
     ;; Calculate distance between the two nodes connected by the road
     ask turtle1 [  
       set link-distance distance turtle2
@@ -56,3 +58,10 @@ to layout
   layout-spring nodes links 0.01 1 1
 end
 
+to add-vehicle [ a-vehicle ]
+  set occupants lput occupants [v-id] of a-vehicle
+end
+
+to remove-vehcile [ a-vehcile ]
+  set occupants remove position a-vehcile occupants occupants
+end
