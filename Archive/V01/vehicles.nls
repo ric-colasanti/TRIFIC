@@ -11,6 +11,7 @@ vehicles-own [
   trip                ; the path to ultimate destination is a list of roads
   moving              ; if vehicle is moving
   v-id
+  current-road
 ]
 
 to vehicles-init [number-of-vehicles]
@@ -26,12 +27,17 @@ to vehicles-init [number-of-vehicles]
     while [ new-destination = new-location ] [   
       set new-destination one-of nodes
     ]
-    set v-id 1
+    set v-id random-float 1.0
+    
     
     ; Find the shortest path from starting point to destination
     let new-trip 0
     ask new-location [ set new-trip nw:weighted-path-to new-destination distance_to_destination ]
     set trip new-trip
+    set current-road first new-trip
+    ask  current-road [
+      add-vehicle  myself
+    ] 
     set-destination new-location ; Set initial destination and progress
     set top-speed ( random-float ( 1.0 - slowest-vehicle ) ) + slowest-vehicle  ; Set random maximum speed
     set speed top-speed                  ; Set initial speed to maximum speed
@@ -40,7 +46,7 @@ to vehicles-init [number-of-vehicles]
   ]
 end
 
-to vehicles-move
+to vehicles-move 
   ifelse not empty? trip [ ; If the vehicle still has a destination
     set moving true
     ;; set default speed
@@ -48,7 +54,7 @@ to vehicles-move
     set color lime
     
     ; see what vehicles there ar ahead
-    check-ahead
+    check-ahead 
     
     move-at-correct-speed
     
@@ -66,8 +72,8 @@ to vehicles-move
   ]
 end
 
-to check-ahead
-  let ahead nearest-vehicle-traverling-in-same-direction
+to check-ahead 
+  let ahead nearest-vehicle-traverling-in-same-direction 
   ; if ther is a vehicle ahead
   if ahead != nobody [
       ; check if it is close
@@ -77,7 +83,7 @@ to check-ahead
       ][
         ;; if it is not too close check if it is near
         ;; if it is set speed to that of the close vehicle
-        if distance ahead < 2 * speed [
+        if  distance ahead  < 2 * speed [
           let ahead-speed [speed] of ahead ; Get the speed of the vehicle ahead
           if ahead-speed <= speed [
             set speed ahead-speed  ; Reduce speed to avoid collision
@@ -102,23 +108,38 @@ end
 ;;has a shorter remaining progress to its destination. It does this by filtering other vehicles 
 ;;based on having the same destination, a shorter remaining progress, and the same heading. 
 ;;It then reports the minimum distance to the nearest vehicle that meets all these conditions. 
-to-report nearest-vehicle-traverling-in-same-direction
-  report min-one-of other vehicles with [  
-    destination = [destination] of myself and  ; Same destination
-    remaining-progress < [remaining-progress] of myself and  ; Shorter remaining progress
-    heading = [heading] of myself ; Same direction
-  ] [distance myself] ; and is nearest
+to-report nearest-vehicle-traverling-in-same-direction 
+  let cars [occupants] of current-road
+  let d-min 1000
+  let v nobody
+  foreach cars [ 
+    [t-v] -> ask t-v [
+      if v-id != [v-id] of myself and
+      remaining-progress < [remaining-progress] of myself and  ; Shorter remaining progress
+      heading = [heading] of myself[
+        let d distance myself
+        if d < d-min and d-min > 0 [
+           set d-min d
+           set v self
+        ]
+      ]
+    ]
+  ]
+  report v
 end
 
 to set-destination [new-location]
-  
-  let new-road first trip
+  ask current-road [
+    remove-vehcile  myself 
+  ] 
+  set current-road first trip
   set trip but-first trip
+  
   let new-destination 0
   
   
   ; Select the correct end of the road for the new destination
-  ask  new-road [  
+  ask  current-road [  
     add-vehicle myself
       ifelse end1 = new-location[
          set new-destination end2
@@ -126,7 +147,7 @@ to set-destination [new-location]
         set new-destination end1
       ]
   ]
-  set speed-restriction [speed_limmit] of new-road
+  set speed-restriction [speed_limmit] of current-road
   set location new-location
   set destination new-destination
   move-to location                   ; Move to the new location

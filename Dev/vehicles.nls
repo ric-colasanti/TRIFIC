@@ -12,6 +12,8 @@ vehicles-own [
   moving              ; if vehicle is moving
   v-home              ; home of vehcile
   b-destination       ; the destination building for the vehcile
+  current-road        ; the road the vehicle is on
+  v-id                ; vehicle id
 ]
 
 to vehicles-init [number-of-vehicles]
@@ -24,7 +26,7 @@ to vehicles-init [number-of-vehicles]
        set v-home one-of buildings with [ b-type = "home" ]     ; Select a random starting point
        let new-location  [nearest-node] of v-home
        move-to new-location
-    
+       set v-id random-float 1.0
     
        set b-destination one-of buildings with [ b-type = "building" ]
        let new-destination  [nearest-node] of b-destination 
@@ -33,9 +35,12 @@ to vehicles-init [number-of-vehicles]
     ; Find the shortest path from starting point to destination
     
        ask new-location [ set new-trip nw:weighted-path-to new-destination distance_to_destination ]
-    
+ 
        set trip new-trip
-   
+       set current-road first new-trip
+       ask  current-road [
+         add-vehicle  myself
+       ]    
        set-destination new-location ; Set initial destination and progress
     
        set top-speed ( random-float ( run-speed - slowest-vehicle ) ) + ( run-speed * slowest-vehicle ) ; Set random maximum speed
@@ -110,31 +115,47 @@ end
 ;;has a shorter remaining progress to its destination. It does this by filtering other vehicles 
 ;;based on having the same destination, a shorter remaining progress, and the same heading. 
 ;;It then reports the minimum distance to the nearest vehicle that meets all these conditions. 
-to-report nearest-vehicle-traverling-in-same-direction
-  report min-one-of other vehicles with [  
-    destination = [destination] of myself and  ; Same destination
-    remaining-progress < [remaining-progress] of myself and  ; Shorter remaining progress
-    heading = [heading] of myself ; Same direction
-  ] [distance myself] ; and is nearest
+to-report nearest-vehicle-traverling-in-same-direction 
+  let cars [occupants] of current-road
+  let d-min 1000
+  let v nobody
+  foreach cars [ 
+    [t-v] -> ask t-v [
+      if v-id != [v-id] of myself and
+      remaining-progress < [remaining-progress] of myself and  ; Shorter remaining progress
+      heading = [heading] of myself[
+        let d distance myself
+        if d < d-min and d-min > 0 [
+           set d-min d
+           set v self
+        ]
+      ]
+    ]
+  ]
+  report v
 end
 
 to set-destination [new-location]
-  let new-road first trip
+  ask current-road [
+    remove-vehcile  myself 
+  ] 
+  set current-road first trip
   set trip but-first trip
   let new-destination 0
   
   ; Select the correct end of the road for the new destination
-  ask  new-road [  
+  ask  current-road [  
       ifelse end1 = new-location[
          set new-destination end2
       ][
         set new-destination end1
       ]
   ]
-  set speed-restriction [speed_limmit] of new-road
+  set speed-restriction [speed_limmit] of current-road
   set location new-location
   set destination new-destination
   move-to location                   ; Move to the new location
   face destination                   ; Face the new destination
   set progress distance destination
 end
+

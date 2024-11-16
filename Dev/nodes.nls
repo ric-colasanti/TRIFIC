@@ -4,9 +4,10 @@ undirected-link-breed [ roads road ]
 
 ; Define the variables for roads
 roads-own [
-  r-id ; ID of road
+  r-id                    ; ID of road
   distance_to_destination ; Distance to the destination node
-  speed_limmit ; Speed limit of the road
+  speed_limmit            ; Speed limit of the road
+  occupants               ; vehicles on this road
 ]
 
 ; Define the variables for nodes
@@ -63,6 +64,7 @@ to load-network
         create-road-with t2 [
            set r-id item 0 row
           set color gray
+          set occupants [ ]
           set thickness 1
           set distance_to_destination link-distance
           let l-speed item 3 row
@@ -82,4 +84,13 @@ to load-network
       print " error in link or node data"
     ]
   ]
+end
+
+
+to add-vehicle [ a-vehicle ]
+  set occupants lput a-vehicle occupants
+end
+
+to remove-vehcile [ a-vehcile ]
+  set occupants remove position a-vehcile occupants occupants
 end

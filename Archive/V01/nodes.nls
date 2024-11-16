@@ -33,7 +33,7 @@ to nodes-init [number-of-nodes]
     let turtle1 end1
     let turtle2 end2
     let link-distance 0  
-    set occupants []
+    set occupants [ ]
     ;; Calculate distance between the two nodes connected by the road
     ask turtle1 [  
       set link-distance distance turtle2
@@ -59,7 +59,7 @@ to layout
 end
 
 to add-vehicle [ a-vehicle ]
-  set occupants lput occupants [v-id] of a-vehicle
+  set occupants lput a-vehicle occupants
 end
 
 to remove-vehcile [ a-vehcile ]
