@@ -16,7 +16,7 @@ vehicles-own [
 
 to vehicles-init [number-of-vehicles]
     create-vehicles number-of-vehicles [
-        set color 63                     ; Set vehicle color
+        set color red                     ; Set vehicle color
         set shape "default"               ; Set vehicle shape
         set size 2
         set v-home one-of buildings with [ b-type = "home" ]     ; Select a random starting point
@@ -47,6 +47,7 @@ to start-journey
             set top-speed ( random-float ( 1.0 - slowest-vehicle ) ) + ( 1.0 * slowest-vehicle ) ; Set random maximum speed
             set speed top-speed                  ; Set initial speed to maximum speed
             set remaining-progress progress   ; Set initial remaining progress
+            set color 63
         ]
     ]
 end
