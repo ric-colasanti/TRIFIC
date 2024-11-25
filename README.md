@@ -1,17 +1,3 @@
-Overview
---------
-
-This is a NetLogo model that simulates the movement of vehicles on a road network. The model includes three types of agents: nodes, buildings, and vehicles. Nodes represent intersections in the road network, buildings represent buildings in the environment, and vehicles move along the links between nodes. The model includes features such as speed limits, random maximum speeds for vehicles, and collision avoidance.
-
-Design Concepts
---------------
-
-* **Spatial Extent:** The model is defined on a two-dimensional grid, with nodes, links, and buildings representing intersections, roads, and buildings, respectively.
-* **Temporal Extent:** The model operates in discrete time steps, or ticks. At each tick, vehicles move along the links between nodes and update their speed based on local conditions.
-* **Stochasticity:** The model includes randomness in the form of random maximum speeds for vehicles and the selection of destinations.
-* **Collectives:** The model simulates the collective behavior of vehicles moving on a road network.
-* **Observation:** The model includes a visualization of the road network, buildings, and the movement of vehicles.
-
 Details
 -------
 
@@ -28,7 +14,9 @@ The model operates in two main procedures: `setup` and `go`. `Setup` initializes
 
 ### Initialization
 
-At the beginning of the simulation, the `setup` procedure initializes the nodes, buildings, and vehicles. The `load-network` procedure generates a  network of nodes and links using the network extension and the links csv file. It then sets the links. The `load-buildings` procedure creates a specified number of buildings and assigns them random starting points and destinations. It also calculates the shortest path between the starting point and destination and sets the initial speed and remaining journey distance.A journey is between a home (blue)  and a building (red)
+At the beginning of the simulation, the setup procedure initializes the nodes, buildings, and vehicles. The load-network procedure generates a network of nodes and links using the network extension and the links CSV file. It then sets the links. The load-buildings procedure creates a specified number of buildings and assigns them random starting points and destinations. It also calculates the shortest path between the starting point and destination and sets the initial speed and remaining journey distance. A journey is between a home (blue) and a building (red).
+   
+When the vehicles start their journey, they can only move to the nearest road node if it is unoccupied by other vehicles. This ensures that the vehicles do not collide with each other as they begin their travels, promoting a more realistic simulation of traffic flow.
 
 ### Input
 

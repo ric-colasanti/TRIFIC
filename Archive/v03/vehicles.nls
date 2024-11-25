@@ -18,41 +18,37 @@ to vehicles-init [number-of-vehicles]
   create-vehicles number-of-vehicles [
     set color 63                     ; Set vehicle color
     set shape "default"               ; Set vehicle shape
-    set size 2
-    set v-home one-of buildings with [ b-type = "home" ]     ; Select a random starting point
-    set location  v-home
-    move-to location
-    set top-speed ( random-float ( run-speed - slowest-vehicle ) ) + ( run-speed * slowest-vehicle ) ; Set random maximum speed
-    set speed top-speed                  ; Set initial speed to maximum speed
-  ]
-end
-
-to start-journey
-  let new-location  [nearest-node] of v-home
-  if not any? vehicles-on new-location  [
+    set size 4
+    let new-trip false
+    while [ new-trip = false ]  [
+       set v-home one-of buildings with [ b-type = "home" ]     ; Select a random starting point
+       let new-location  [nearest-node] of v-home
        move-to new-location
+    
+    
        set b-destination one-of buildings with [ b-type = "building" ]
        let new-destination  [nearest-node] of b-destination 
-       ifelse new-destination = new-location [
-        move-to b-destination
-        set moving false
-  ][
+    
+    
     ; Find the shortest path from starting point to destination
-       let new-trip 0
+    
        ask new-location [ set new-trip nw:weighted-path-to new-destination distance_to_destination ]
-  
+    
        set trip new-trip
-
+   
        set-destination new-location ; Set initial destination and progress
+    
        set top-speed ( random-float ( run-speed - slowest-vehicle ) ) + ( run-speed * slowest-vehicle ) ; Set random maximum speed
        set speed top-speed                  ; Set initial speed to maximum speed
        set remaining-progress progress   ; Set initial remaining progress
-  ]
+ 
+    ] 
+    
   ]
 end
 
-to vehicles-travel 
-ifelse not empty? trip [ ; If the vehicle still has a destination
+to vehicles-move
+  ifelse not empty? trip [ ; If the vehicle still has a destination
     set moving true
     ;; set default speed
     set speed top-speed
@@ -75,14 +71,6 @@ ifelse not empty? trip [ ; If the vehicle still has a destination
     set destination b-destination
     move-to b-destination
     set moving false
-  ]
-end
-
-to vehicles-move
-  ifelse v-home = location [
-    start-journey
-  ][
-    vehicles-travel
   ]
 end
 
@@ -123,31 +111,14 @@ end
 ;;based on having the same destination, a shorter remaining progress, and the same heading. 
 ;;It then reports the minimum distance to the nearest vehicle that meets all these conditions. 
 to-report nearest-vehicle-traverling-in-same-direction
-  let local-turtles vehicles-here
-  let d1 min-one-of other local-turtles   with [  
+  report min-one-of other vehicles with [  
     destination = [destination] of myself and  ; Same destination
     remaining-progress < [remaining-progress] of myself and  ; Shorter remaining progress
     heading = [heading] of myself ; Same direction
-  ] [distance myself]
-  let neighbor-turtles vehicles-on neighbors
- let d2  min-one-of other local-turtles   with [  
-    destination = [destination] of myself and  ; Same destination
-    remaining-progress < [remaining-progress] of myself and  ; Shorter remaining progress
-    heading = [heading] of myself ; Same direction
-  ] [distance myself]
-  ifelse d1 = nobody [
-    if d2 = nobody [
-      report nobody
-    ]
-    report d2
-  ][
-    report d1
-  ]
-  
+  ] [distance myself] ; and is nearest
 end
 
 to set-destination [new-location]
-
   let new-road first trip
   set trip but-first trip
   let new-destination 0

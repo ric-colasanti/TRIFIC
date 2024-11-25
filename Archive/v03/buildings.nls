@@ -28,10 +28,10 @@ to load-buildings
     create-buildings 1 [
       ;; Set the building's ID, x-position, y-position, shape, size, color, and type
       set b-id (item 0 row )
-      set b-xpos  item 1 row  * max-pxcor
-      set b-ypos  item 2 row  * max-pycor
+      set b-xpos  item 1 row  * 320
+      set b-ypos  item 2 row  * 320
       set shape "square"
-      set size 1
+      set size 1.2
       set color blue
       setxy b-xpos b-ypos
       set b-type  "home"
@@ -53,10 +53,10 @@ to load-buildings
     create-buildings 1 [
       ;; Set the building's ID, x-position, y-position, shape, size, color, and type
       set b-id (item 0 row )
-      set b-xpos  item 1 row  * max-pxcor
-      set b-ypos  item 2 row  * max-pycor
+      set b-xpos  item 1 row  * 320
+      set b-ypos  item 2 row  * 320
       set shape "square"
-      set size 1
+      set size 2
       set color red
       setxy b-xpos b-ypos
       set b-type  "building"

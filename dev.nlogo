@@ -36,11 +36,11 @@ end
 GRAPHICS-WINDOW
 325
 25
-975
-676
+838
+539
 -1
 -1
-2.0
+5.0
 1
 10
 1
@@ -51,9 +51,9 @@ GRAPHICS-WINDOW
 0
 1
 0
-320
+100
 0
-320
+100
 1
 1
 1
@@ -118,10 +118,10 @@ SLIDER
 58
 number_of_vehicles
 number_of_vehicles
+1
 100
-10000
-5100.0
-100
+79.0
+1
 1
 NIL
 HORIZONTAL
@@ -135,7 +135,7 @@ slowest-vehicle
 slowest-vehicle
 0.1
 1.0
-0.3
+0.1
 0.1
 1
 NIL
@@ -157,8 +157,6 @@ NIL
 HORIZONTAL
 
 @#$#@#$#@
- Sure! Here's an updated version of the ODD that includes buildings as an entity:
-
 Overview
 --------
 

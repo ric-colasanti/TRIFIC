@@ -1,156 +1,168 @@
 breed [vehicles vehicle] ; Define a new breed called "vehicles"
 
 vehicles-own [
-  location            ; Current location of the vehicle
-  destination         ; Destination of the vehicle
-  top-speed           ; Maximum speed of the vehicle
-  speed               ; Current speed of the vehicle
-  speed-restriction   ; Local speed restriction
-  progress            ; Total distance of the current progress on a road
-  remaining-progress     ; Remaining distance of the current progress on the road
-  trip                ; the path to ultimate destination is a list of roads
-  moving              ; if vehicle is moving
-  v-home              ; home of vehcile
-  b-destination       ; the destination building for the vehcile
+    location            ; Current location of the vehicle
+    destination         ; Destination of the vehicle
+    top-speed           ; Maximum speed of the vehicle
+    speed               ; Current speed of the vehicle
+    speed-restriction   ; Local speed restriction
+    progress            ; Total distance of the current progress on a road
+    remaining-progress     ; Remaining distance of the current progress on a road
+    trip                ; the path to ultimate destination is a list of roads
+    moving              ; if vehicle is moving
+    v-home              ; home of vehicle
+    b-destination       ; the destination building for the vehicle
 ]
 
 to vehicles-init [number-of-vehicles]
-  create-vehicles number-of-vehicles [
-    set color 63                     ; Set vehicle color
-    set shape "default"               ; Set vehicle shape
-    set size 2
-    let new-trip false
-    while [ new-trip = false ]  [
-       set v-home one-of buildings with [ b-type = "home" ]     ; Select a random starting point
-       let new-location  [nearest-node] of v-home
-       move-to new-location
-    
-    
-       set b-destination one-of buildings with [ b-type = "building" ]
-       let new-destination  [nearest-node] of b-destination 
-    
-    
-    ; Find the shortest path from starting point to destination
-    
-       ask new-location [ set new-trip nw:weighted-path-to new-destination distance_to_destination ]
-    
-       set trip new-trip
-   
-       set-destination new-location ; Set initial destination and progress
-    
-       set top-speed ( random-float ( run-speed - slowest-vehicle ) ) + ( run-speed * slowest-vehicle ) ; Set random maximum speed
-       set speed top-speed                  ; Set initial speed to maximum speed
-       set remaining-progress progress   ; Set initial remaining progress
- 
-    ] 
-    
-  ]
+    create-vehicles number-of-vehicles [
+        set color 63                     ; Set vehicle color
+        set shape "default"               ; Set vehicle shape
+        set size 2
+        set v-home one-of buildings with [ b-type = "home" ]     ; Select a random starting point
+        set location  v-home
+        move-to location
+        set top-speed ( random-float ( 1.0 - slowest-vehicle ) ) + ( 1.0 * slowest-vehicle ) ; Set random maximum speed
+        set speed top-speed                  ; Set initial speed to maximum speed
+    ]
+end
+
+to start-journey
+    let new-location  [nearest-node] of v-home
+    if not any? vehicles-on new-location  [
+        move-to new-location
+        set b-destination one-of buildings with [ b-type = "building" ]
+        let new-destination  [nearest-node] of b-destination 
+        ifelse new-destination = new-location [
+            move-to b-destination
+            set moving false
+        ][
+            ; Find the shortest path from starting point to destination
+            let new-trip 0
+            ask new-location [ set new-trip nw:weighted-path-to new-destination distance_to_destination ]
+
+            set trip new-trip
+
+            set-destination new-location ; Set initial destination and progress
+            set top-speed ( random-float ( 1.0 - slowest-vehicle ) ) + ( 1.0 * slowest-vehicle ) ; Set random maximum speed
+            set speed top-speed                  ; Set initial speed to maximum speed
+            set remaining-progress progress   ; Set initial remaining progress
+        ]
+    ]
+end
+
+to vehicles-travel 
+    ifelse not empty? trip [ ; If the vehicle still has a destination
+        set moving true
+        ;; set default speed
+        set speed top-speed
+        set color 63
+        
+        ; see what vehicles there are ahead
+        check-ahead
+        
+        move-at-correct-speed
+        
+        ; If the vehicle reaches end of road start on the next road of the trip if there is one
+        if distance location >= progress [
+            let difference distance location - progress ; Calculate remaining distance
+            set-destination destination 
+            set speed difference
+            check-ahead  
+            move-at-correct-speed 
+        ] 
+    ][
+        set destination b-destination
+        move-to b-destination
+        set moving false
+    ]
 end
 
 to vehicles-move
-  ifelse not empty? trip [ ; If the vehicle still has a destination
-    set moving true
-    ;; set default speed
-    set speed top-speed
-    set color 63
-    
-    ; see what vehicles there ar ahead
-    check-ahead
-    
-    move-at-correct-speed
-    
-    ; If the vehicle reaches end of road sart on the next road of the trip if there is one
-    if distance location >= progress [
-      let difference distance location - progress ; Calculate remaining distance
-      set-destination destination 
-      set speed difference
-      check-ahead  
-      move-at-correct-speed 
-    ] 
-  ][
-    set destination b-destination
-    move-to b-destination
-    set moving false
-  ]
+    ifelse v-home = location [
+        start-journey
+    ][
+        vehicles-travel
+    ]
 end
 
 to check-ahead
-  let ahead nearest-vehicle-traverling-in-same-direction
-  ; if ther is a vehicle ahead
-  if ahead != nobody [
-      ; check if it is close
-      ifelse distance ahead < speed [  
-        set speed 0 ; Stop if too close
-        set color red ; Indicate stopped
-      ][
-        ;; if it is not too close check if it is near
-        ;; if it is set speed to that of the close vehicle
-        if distance ahead < 2 * speed [
-          let ahead-speed [speed] of ahead ; Get the speed of the vehicle ahead
-          if ahead-speed <= speed [
-            set speed ahead-speed  ; Reduce speed to avoid collision
-          ]
-          set color orange ; Indicate reduced speed
+    let ahead nearest-vehicle-traverling-in-same-direction
+    ; if there is a vehicle ahead
+    if ahead != nobody [
+        ; check if it is close
+        ifelse distance ahead < speed [  
+            set speed 0 ; Stop if too close
+            set color red ; Indicate stopped
+        ][
+            ;; if it is not too close check if it is near
+            ;; if it is set speed to that of the close vehicle
+            if distance ahead < 2 * speed [
+                let ahead-speed [speed] of ahead ; Get the speed of the vehicle ahead
+                if ahead-speed <= speed [
+                    set speed ahead-speed  ; Reduce speed to avoid collision
+                ]
+                set color orange ; Indicate reduced speed
+            ]
         ]
-      ]
     ]
 end
 
 to move-at-correct-speed
-  ; check if the speed of the vehcile is greater than the speed limmit for the road
-  if speed > speed-restriction [
-         set speed speed-restriction
-  ]
-  fd speed ; Move forward
-  set remaining-progress distance destination ; Update remaining progress distance
+    ; check if the speed of the vehicle is greater than the speed limit for the road
+    if speed > speed-restriction [
+        set speed speed-restriction
+    ]
+    fd speed ; Move forward
+    set remaining-progress distance destination ; Update remaining progress distance
 end
 
 
-;returns the nearest vehicle that is traveling in the same direction as the calling vehicle and 
-;;has a shorter remaining progress to its destination. It does this by filtering other vehicles 
-;;based on having the same destination, a shorter remaining progress, and the same heading. 
-;;It then reports the minimum distance to the nearest vehicle that meets all these conditions. 
+; Returns the nearest vehicle that is traveling in the same direction as the calling vehicle and 
+;; has a shorter remaining progress to its destination. It does this by filtering other vehicles 
+;; based on having the same destination, a shorter remaining progress, and the same heading. 
+;; It then reports the minimum distance to the nearest vehicle that meets all these conditions. 
 to-report nearest-vehicle-traverling-in-same-direction
-  let local-turtles vehicles-here
-  let d1 min-one-of other local-turtles   with [  
-    destination = [destination] of myself and  ; Same destination
-    remaining-progress < [remaining-progress] of myself and  ; Shorter remaining progress
-    heading = [heading] of myself ; Same direction
-  ] [distance myself]
-  let neighbor-turtles vehicles-on neighbors
- let d2  min-one-of other local-turtles   with [  
-    destination = [destination] of myself and  ; Same destination
-    remaining-progress < [remaining-progress] of myself and  ; Shorter remaining progress
-    heading = [heading] of myself ; Same direction
-  ] [distance myself]
-  ifelse d1 = nobody [
-    if d2 = nobody [
-      report nobody
+    let local-turtles vehicles-here
+    let d1 min-one-of other local-turtles   with [  
+        destination = [destination] of myself and  ; Same destination
+        remaining-progress < [remaining-progress] of myself and  ; Shorter remaining progress
+        heading = [heading] of myself ; Same direction
+    ] [distance myself]
+    let neighbor-turtles vehicles-on neighbors
+    let d2  min-one-of other local-turtles   with [  
+        destination = [destination] of myself and  ; Same destination
+        remaining-progress < [remaining-progress] of myself and  ; Shorter remaining progress
+        heading = [heading] of myself ; Same direction
+    ] [distance myself]
+    ifelse d1 = nobody [
+        if d2 = nobody [
+            report nobody
+        ]
+        report d2
+    ][
+        report d1
     ]
-    report d2
-  ][
-    report d1
-  ]
-  
 end
 
 to set-destination [new-location]
-  let new-road first trip
-  set trip but-first trip
-  let new-destination 0
-  
-  ; Select the correct end of the road for the new destination
-  ask  new-road [  
-      ifelse end1 = new-location[
-         set new-destination end2
-      ][
-        set new-destination end1
-      ]
-  ]
-  set speed-restriction [speed_limmit] of new-road
-  set location new-location
-  set destination new-destination
-  move-to location                   ; Move to the new location
-  face destination                   ; Face the new destination
-  set progress distance destination
+
+    let new-road first trip
+    set trip but-first trip
+    let new-destination 0
+    
+    ; Select the correct end of the road for the new destination
+    ask  new-road [  
+        ifelse end1 = new-location[
+            set new-destination end2
+        ][
+            set new-destination end1
+        ]
+    ]
+    set speed-restriction [speed_limmit] of new-road
+    set location new-location
+    set destination new-destination
+    move-to location                   ; Move to the new location
+    face destination                   ; Face the new destination
+    set progress distance destination
 end

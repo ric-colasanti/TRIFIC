@@ -34,10 +34,10 @@ to load-network
     create-nodes 1 [
       ;; Set the node's ID, x-position, and y-position
       set n-id (item 0 row )
-      set n-xpos  item 1 row  * 320
-      set n-ypos  item 2 row  * 320
+      set n-xpos  item 1 row  * max-pxcor
+      set n-ypos  item 2 row  * max-pycor
       set shape "circle"
-      set size 0.5
+      set size 0.6
       set color grey
       setxy n-xpos n-ypos
    ]
@@ -63,16 +63,16 @@ to load-network
         create-road-with t2 [
            set r-id item 0 row
           set color gray
-          set thickness 1
+          set thickness 0.1
           set distance_to_destination link-distance
           let l-speed item 3 row
-          set speed_limmit 1.0 * run-speed
+          set speed_limmit 1.0 * 1.0
           if l-speed  = "30 mph" [
               set speed_limmit 0.3
             set thickness 0.1
           ]
           if l-speed  = "20 mph" [
-              set speed_limmit 0.2 * run-speed
+              set speed_limmit 0.2 * 1.0
             set thickness 0.1
           ]
           

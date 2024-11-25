@@ -108,26 +108,28 @@ end
 ;;has a shorter remaining progress to its destination. It does this by filtering other vehicles 
 ;;based on having the same destination, a shorter remaining progress, and the same heading. 
 ;;It then reports the minimum distance to the nearest vehicle that meets all these conditions. 
-to-report nearest-vehicle-traverling-in-same-direction 
-  let cars [occupants] of current-road
-  let d-min 1000
-  let v nobody
-  foreach cars [ 
-    [t-v] -> ask t-v [
-      if v-id != [v-id] of myself and
-      remaining-progress < [remaining-progress] of myself and  ; Shorter remaining progress
-      heading = [heading] of myself[
-        let d distance myself
-        if d < d-min and d-min > 0 [
-           set d-min d
-           set v self
-        ]
-      ]
+to-report nearest-vehicle-traverling-in-same-direction
+  let local-turtles vehicles-here
+  let d1 min-one-of other local-turtles   with [  
+    destination = [destination] of myself and  ; Same destination
+    remaining-progress < [remaining-progress] of myself and  ; Shorter remaining progress
+    heading = [heading] of myself ; Same direction
+  ] [distance myself]
+  let neighbor-turtles vehicles-on neighbors
+ let d2  min-one-of other local-turtles   with [  
+    destination = [destination] of myself and  ; Same destination
+    remaining-progress < [remaining-progress] of myself and  ; Shorter remaining progress
+    heading = [heading] of myself ; Same direction
+  ] [distance myself]
+  ifelse d1 = nobody [
+    if d2 = nobody [
+      report nobody
     ]
+    report d2
+  ][
+    report d1
   ]
-  report v
-end
-
+end 
 to set-destination [new-location]
   ask current-road [
     remove-vehcile  myself 
