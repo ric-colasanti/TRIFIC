@@ -15,9 +15,6 @@ Design Concepts
 Details
 -------
 
-Details
--------
-
 ### Entities, States, and Variables
 
 * **Nodes:** Nodes represent intersections in the road network. They have a position on the grid, a list of links connected to them, and a unique ID.
