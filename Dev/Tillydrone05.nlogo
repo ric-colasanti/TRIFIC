@@ -11,6 +11,7 @@ to setup
   load-buildings
   vehicles-init number_of_vehicles ; Initialize vehicles
   reset-ticks ; Reset the tick counter
+  go
 end
 
 
@@ -118,10 +119,10 @@ SLIDER
 58
 number_of_vehicles
 number_of_vehicles
-1
-100
-79.0
-1
+10
+10000
+2000.0
+10
 1
 NIL
 HORIZONTAL
@@ -135,22 +136,7 @@ slowest-vehicle
 slowest-vehicle
 0.1
 1.0
-0.1
-0.1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-115
-95
-310
-128
-run-speed
-run-speed
-1
-10
-1.0
+0.2
 0.1
 1
 NIL
@@ -187,7 +173,9 @@ The model operates in two main procedures: `setup` and `go`. `Setup` initializes
 
 ### Initialization
 
-At the beginning of the simulation, the `setup` procedure initializes the nodes, buildings, and vehicles. The `load-network` procedure generates a  network of nodes and links using the network extension and the links csv file. It then sets the links. The `load-buildings` procedure creates a specified number of buildings and assigns them random starting points and destinations. It also calculates the shortest path between the starting point and destination and sets the initial speed and remaining journey distance.A journey is between a home (blue)  and a building (red)
+At the beginning of the simulation, the setup procedure initializes the nodes, buildings, and vehicles. The load-network procedure generates a network of nodes and links using the network extension and the links CSV file. It then sets the links. The load-buildings procedure creates a specified number of buildings and assigns them random starting points and destinations. It also calculates the shortest path between the starting point and destination and sets the initial speed and remaining journey distance. A journey is between a home (blue) and a building (red).
+   
+When the vehicles start their journey, they can only move to the nearest road node if it is unoccupied by other vehicles. This ensures that the vehicles do not collide with each other as they begin their travels, promoting a more realistic simulation of traffic flow.
 
 ### Input
 

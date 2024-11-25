@@ -64,5 +64,4 @@ to load-buildings
       set nearest-node min-one-of nodes [distance myself ] 
    ]
   ]
-
 end

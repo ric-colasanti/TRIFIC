@@ -121,7 +121,7 @@ number_of_vehicles
 number_of_vehicles
 10
 10000
-2000.0
+300.0
 10
 1
 NIL

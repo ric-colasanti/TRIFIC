@@ -29,7 +29,7 @@ end
 
 to start-journey
     let new-location  [nearest-node] of v-home
-    if not any? vehicles-on new-location  [
+    ifelse not any? vehicles-on new-location  [
         move-to new-location
         set b-destination one-of buildings with [ b-type = "building" ]
         let new-destination  [nearest-node] of b-destination 
@@ -49,6 +49,9 @@ to start-journey
             set remaining-progress progress   ; Set initial remaining progress
             set color 63
         ]
+    ][
+       set color red
+       move-to v-home
     ]
 end
 
@@ -60,17 +63,19 @@ to vehicles-travel
         set color 63
         
         ; see what vehicles there are ahead
-        check-ahead
+        let c check-ahead
         
         move-at-correct-speed
         
         ; If the vehicle reaches end of road start on the next road of the trip if there is one
         if distance location >= progress [
-            let difference distance location - progress ; Calculate remaining distance
-            set-destination destination 
-            set speed difference
-            check-ahead  
-            move-at-correct-speed 
+            if check-ahead [
+               let difference distance location - progress ; Calculate remaining distance
+               set-destination destination 
+               set speed difference
+               set c check-ahead  
+               move-at-correct-speed 
+           ]
         ] 
     ][
         set destination b-destination
@@ -87,26 +92,33 @@ to vehicles-move
     ]
 end
 
-to check-ahead
+to-report check-ahead
     let ahead nearest-vehicle-traverling-in-same-direction
     ; if there is a vehicle ahead
     if ahead != nobody [
         ; check if it is close
-        ifelse distance ahead < speed [  
+    if [ speed ] of ahead = 0 [
+      set speed 0 ; Stop if too close
+            set color red ; Indicate stopped
+            report False
+        ]
+        ifelse distance ahead < speed * 2 [  
             set speed 0 ; Stop if too close
             set color red ; Indicate stopped
+            report False
         ][
             ;; if it is not too close check if it is near
             ;; if it is set speed to that of the close vehicle
-            if distance ahead < 2 * speed [
+            if distance ahead < 3 * speed [
                 let ahead-speed [speed] of ahead ; Get the speed of the vehicle ahead
                 if ahead-speed <= speed [
                     set speed ahead-speed  ; Reduce speed to avoid collision
                 ]
                 set color orange ; Indicate reduced speed
+                report True
             ]
         ]
-    ]
+    ] report True
 end
 
 to move-at-correct-speed
