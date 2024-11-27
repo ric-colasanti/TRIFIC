@@ -70,6 +70,7 @@ to set-new-road [ move-distance ]
       set traffic myself
     ][
       set traffic list traffic myself
+      show traffic
     ]
   ]
 
