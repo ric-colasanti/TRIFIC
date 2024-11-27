@@ -1,0 +1,48 @@
+; Define a breed for nodes
+breed [nodes node]
+
+; Define a directed-link-breed for roads
+directed-link-breed [roads road]
+
+; Define variables for nodes
+nodes-own[
+  n-id          ; Node ID
+]
+
+; Define variables for roads
+roads-own [
+  traffic       ; List of vehicles on the road
+  r-id          ; Road ID
+]
+
+; Procedure to create a new node
+to new_node [ _id x-pos y-pos ]
+  ; Set the node's ID, appearance, and position
+  set n-id _id
+  set color blue
+  set size 0.5
+  set shape "circle"
+  setxy x-pos y-pos
+end
+
+; Procedure to print the properties of a node
+to print_node
+  ; Write the x and y coordinates of the node
+  write xcor
+  write ycor
+
+  ; Print the list of road neighbors for the node
+  print out-road-neighbors  
+
+  ; Print a blank line for readability
+  print " "
+end
+
+; Procedure to print the properties of a road
+to print_road
+  ; Write the traffic on the road
+  write traffic
+
+  ; Print the road's ID
+  print r-id
+end
