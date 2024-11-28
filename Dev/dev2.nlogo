@@ -36,18 +36,24 @@ to setup
   ; Create vehicles and initialize their trips
   foreach n-list [n ->
     create-vehicles 1 [
-      new_vehicle n
+      new-vehicle n
       set-new-road 0
     ]
   ]
-
+ ask vehicles [ set label who ]
   ; Reset the tick counter
   reset-ticks
 end
 
 to go
+
+  ;set the speed of the vehicle based on local conditions
+  ask vehicles [set-speed]
+
   ; Update the positions of vehicles
-  ask vehicles [move-vehicle]
+  ask vehicles [
+    move-vehicle
+  ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
