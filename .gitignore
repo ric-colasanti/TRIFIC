@@ -1,2 +1,3 @@
 # Ignore the venv folder in the Python folder
 Python/venv/
+Python/cash/
