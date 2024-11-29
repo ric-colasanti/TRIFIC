@@ -1,0 +1,25 @@
+id,start,end,maxspeed
+l_0,n_id0,n_id1,30 mph
+l_1,n_id0,n_id2,30 mph
+l_2,n_id0,n_id3,20 mph
+l_3,n_id2,n_id0,30 mph
+l_4,n_id2,n_id4,30 mph
+l_5,n_id2,n_id5,30 mph
+l_6,n_id6,n_id7,20 mph
+l_7,n_id6,n_id8,20 mph
+l_8,n_id9,n_id10,30 mph
+l_9,n_id9,n_id11,None
+l_10,n_id12,n_id13,20 mph
+l_11,n_id12,n_id14,20 mph
+l_12,n_id15,n_id16,30 mph
+l_13,n_id17,n_id18,20 mph
+l_14,n_id17,n_id19,20 mph
+l_15,n_id20,n_id21,20 mph
+l_16,n_id20,n_id22,20 mph
+l_17,n_id20,n_id23,None
+l_18,n_id24,n_id25,None
+l_19,n_id24,n_id26,None
+l_20,n_id1,n_id27,30 mph
+l_21,n_id28,n_id29,30 mph
+l_22,n_id28,n_id30,30 mph
+l_23,n_id31,n_id32,None
