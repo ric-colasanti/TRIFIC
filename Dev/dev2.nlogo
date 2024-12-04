@@ -10,37 +10,11 @@ breed [blanks blank]
 to setup
   clear-all  ; Clear any existing data
   ask patches [ set pcolor white ]
-
-  ; Setup a square of nodes
-  create-nodes 1 [ new_node 0 0.1 * max-pxcor 0.1 * max-pycor ]
-  create-nodes 1 [ new_node 1 0.9 * max-pxcor 0.1 * max-pycor ]
-  create-nodes 1 [ new_node 2 0.9 * max-pxcor 0.9 * max-pycor ]
-  create-nodes 1 [ new_node 3 0.1 * max-pxcor 0.9 * max-pycor ]
-
-  ; Create a list of node IDs
-  let n-list [0 1 2 3]
-
-  ; Connect each node to its neighbors with roads
-  foreach n-list [n ->
-    let n-to (n + 1) mod 4
-    ask node n [
-      create-road-to node n-to [
-        ; Set the road's ID
-        set r-id n
-        ; Initialize the traffic on the road
-        set traffic nobody
-      ]
-    ]
-  ]
-
-  ; Create vehicles and initialize their trips
-  foreach n-list [n ->
-    create-vehicles 1 [
-      new-vehicle n
+  load-network
+  create-vehicles 20 [
+      new-vehicle
       set-new-road 0
-    ]
   ]
- ask vehicles [ set label who ]
   ; Reset the tick counter
   reset-ticks
 end
@@ -59,11 +33,11 @@ end
 GRAPHICS-WINDOW
 210
 10
-647
-448
+860
+661
 -1
 -1
-13.0
+2.0
 1
 10
 1
@@ -74,9 +48,9 @@ GRAPHICS-WINDOW
 0
 1
 0
-32
+320
 0
-32
+320
 0
 0
 1

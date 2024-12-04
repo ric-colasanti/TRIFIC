@@ -1,0 +1,206 @@
+; Define a breed for vehicles
+
+breed [vehicles vehicle]
+
+
+; Define variables for vehicles
+
+vehicles-own [
+  v-id                    ; Vehicle ID
+  v-home                  ; Home node for the vehicle
+  v-destination           ; Destination node for the vehicle
+  current-road            ; The road the vehicle is currently on
+  trip                    ; The path for the vehicle to follow
+  current-node            ; The current node the vehicle is at
+  next-node               ; The next node the vehicle will move to
+  distance-to-next-node
+  max-speed               ; The maximum speed of the vehicle
+  speed                   ; The actual speed of the vehicle
+]
+
+; Procedure to create a new vehicle
+
+to new-vehicle [ n ]
+  ; Set the current node and v-id based on the input node
+  set current-node [n-id] of node n
+  set v-id n
+  ; Move the turtle to the node and set its appearance
+
+  move-to node n
+  set color orange
+  set size 1.5
+
+  ; Set the speed of the vehicle
+  set max-speed random-float 0.9 + 0.1
+
+  ; Initialize the trip and set the home and destination nodes
+  let new-trip nobody
+  set v-home node n
+  set v-destination node ( ( current-node - 1 ) mod 4 )
+
+  ; Calculate the path from the home node to the destination node
+  ask v-home [ set new-trip nw:path-to [ v-destination ] of myself ]
+
+  ; Set the trip variable for the vehicle
+  set trip new-trip
+
+  ; Initialize the current-road and next-node variables
+  set current-road nobody
+  set next-node nobody
+end
+
+
+; Procedure to set a new road for the vehicle to move on
+to set-new-road [ move-distance ]
+  if current-road != nobody [
+    ; Remove the vehicle from the current road's traffic list
+    ask current-road [
+      ifelse is-list? traffic [
+        set traffic remove myself traffic
+      ][
+        set traffic nobody
+      ]
+    ]
+  ]
+
+  ; Set the current-road and update the trip variable
+  set current-road first trip
+  set trip but-first trip
+
+  ; Add the vehicle to the new road's traffic list
+  ask current-road [
+    ifelse traffic = nobody [
+      set traffic myself
+    ][
+     set traffic sentence traffic myself  
+    ]
+  ]
+
+  ; Set the next-node based on the current road
+  if next-node != nobody [
+    move-to next-node
+  ] 
+  
+  ; Set the next-node
+  set next-node [ end2 ] of current-road
+  
+  ; Face the next-node
+  face next-node
+  set distance-to-next-node distance next-node
+  
+  ; Move the vehicle along the road
+  fd move-distance
+end
+
+
+; Procedure to check if the vehicle has reached the end of the current road
+to check-end-road
+  if distance next-node <= speed [
+
+    ; Calculate the remaining distance to move on the current road
+    let move-distance distance next-node - speed
+    ; Set a new road for the vehicle to move on
+    ifelse not empty? trip [
+      set-new-road move-distance
+    ][
+      set speed 0
+    ] 
+  ]
+end
+
+
+; procedure to set the speed of the vehicle 
+to set-speed
+  nearest-vehicle 2
+end
+
+
+
+; Procedure to find the nearest vehicle on the same road or on the next road
+to nearest-vehicle [ check-distance ]
+  ; Initialize local variables
+  let close-vehicle nobody   ; the nearest vehicle
+  let d-min 10000000         ; distance to nearest vehicle
+  
+  let l-traffic [ traffic ] of current-road
+  
+  ; Check if there are any vehicles on the current road
+  if is-list? l-traffic [
+    ; Loop through each vehicle on the current road
+    foreach l-traffic [ 
+      ;if it is not a list then this is the only vehicle on the road
+      v ->  ask v [
+        ; Check if the vehicle is not the current vehicle
+        if v-id != [ v-id ] of myself [  
+          ; Check if the distance to the next node of the other vehicle is less than
+          ; the distance to the next node of the current vehicle
+          ; this is make shure only looking a vehicle ahead
+          if distance-to-next-node < [ distance-to-next-node ] of myself  [       
+            ; Check if the distance to the other vehicle is less than the current distance
+            if distance myself < d-min [
+              ; Set the close-vehicle and the distance
+              set d-min  distance myself
+              set close-vehicle self
+            ]
+          ]
+        ]
+      ]
+    ]
+  ]  
+  ; If no close vehicle is found on the current road, check for vehicles on the next road
+  if close-vehicle = nobody [
+    ; if the distance to the next node is less than the checking-distance
+    if distance-to-next-node < check-distance [
+      ; set a local veriable to the next node of the calling vehicle
+      let hold-node next-node
+      let hold-distance distance-to-next-node
+      ; check if the is any more roads in the trop 
+      if length trip > 0 [
+        ; set local veriable to be the next road inthe trip
+        let next-road first trip
+        ; check for any traffic
+        if [traffic] of next-road != nobody [
+          ask next-road [
+            ; if there is a list of trafiic loop through them
+            ifelse is-list? traffic[
+              foreach traffic [ v ->
+                ask v [
+                  let x distance hold-node
+                  if x < d-min [
+                    set d-min x
+                    set close-vehicle self
+                  ] 
+                ]
+              ]
+            ][
+              ; If there is only one vehicle on the next road, check its distance to the hold-node
+              ask traffic [
+                set d-min distance hold-node
+                set close-vehicle self
+              ]
+            ]  
+          ]
+          ; add the distance to the nextnode to the distance of the closeast vehicle on the next road 
+          set d-min d-min + hold-distance 
+        ] 
+      ]
+    ]
+  ]
+  
+  set speed max-speed
+  if close-vehicle != nobody [
+    if d-min < check-distance [
+      set speed [speed] of close-vehicle
+    ]
+  ] 
+end
+
+
+; Procedure to move the vehicle
+to move-vehicle
+  ; Check if the vehicle has reached the end of the current road
+  check-end-road
+  ; Move the vehicle forward by its speed
+  fd speed
+  set distance-to-next-node distance next-node
+end

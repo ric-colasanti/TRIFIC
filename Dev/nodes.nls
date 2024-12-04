@@ -7,12 +7,16 @@ directed-link-breed [roads road]
 ; Define variables for nodes
 nodes-own[
   n-id          ; Node ID
+  n-xpos        ; x-position of node
+  n-ypos        ; y-position of node
 ]
 
 ; Define variables for roads
 roads-own [
-  traffic       ; List of vehicles on the road
-  r-id          ; Road ID
+  traffic                 ; List of vehicles on the road
+  r-id                    ; Road ID
+  distance_to_destination ; Distance to the destination node
+  speed_limmit            ; Speed limit of the road
 ]
 
 ; Procedure to create a new node
@@ -45,4 +49,65 @@ to print_road
 
   ; Print the road's ID
   print r-id
+end
+
+to create_road_node [ id xpos ypos ]
+  ;; Set the node's ID, x-position, and y-position
+      set n-id id
+      set n-xpos  xpos  * max-pxcor
+      set n-ypos  ypos  * max-pycor
+      set shape "circle"
+      set size 2
+      set color grey
+      setxy n-xpos n-ypos
+end
+
+to load-network
+  ;; Set the network context to nodes and roads
+  nw:set-context nodes roads
+
+  ;; Load the node list from a CSV file
+  let csv-data csv:from-file "Data/roads.csv"
+
+  ;; Separate the header row from the data rows
+  let header-row first csv-data
+  let data-rows butfirst csv-data
+
+  ;; Loop through the data rows and create nodes
+  foreach data-rows [
+    row ->
+    let start_id item 0 row
+    let end_id item 5 row
+    
+    let start_xpos  item 3 row
+    let start_ypos  item 4 row
+    
+    let end_xpos item 8 row
+    let end_ypos item 9 row
+    
+    if not any? nodes with [ n-id = start_id ][
+        create-nodes 1 [
+           create_road_node  start_id start_xpos start_ypos
+        ]
+    ]
+
+    if not any? nodes with [ n-id = end_id ][
+        create-nodes 1 [
+           create_road_node  end_id end_xpos end_ypos
+        ]
+    ]
+    
+    let start_node one-of nodes with [ n-id = start_id ]
+    let end_node one-of nodes with [ n-id = end_id ]
+    ask start_node [
+      create-road-to end_node [
+         set traffic nobody
+      ]
+    ]
+    ask end_node [
+      create-road-to start_node [
+         set traffic nobody
+      ]
+    ]
+  ]
 end

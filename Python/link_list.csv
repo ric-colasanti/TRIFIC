@@ -1,25 +1,145 @@
 id,start,end,maxspeed
 l_0,n_id0,n_id1,30 mph
 l_1,n_id0,n_id2,30 mph
-l_2,n_id0,n_id3,20 mph
-l_3,n_id2,n_id0,30 mph
-l_4,n_id2,n_id4,30 mph
-l_5,n_id2,n_id5,30 mph
-l_6,n_id6,n_id7,20 mph
-l_7,n_id6,n_id8,20 mph
-l_8,n_id9,n_id10,30 mph
-l_9,n_id9,n_id11,None
-l_10,n_id12,n_id13,20 mph
-l_11,n_id12,n_id14,20 mph
-l_12,n_id15,n_id16,30 mph
-l_13,n_id17,n_id18,20 mph
-l_14,n_id17,n_id19,20 mph
-l_15,n_id20,n_id21,20 mph
-l_16,n_id20,n_id22,20 mph
-l_17,n_id20,n_id23,None
-l_18,n_id24,n_id25,None
-l_19,n_id24,n_id26,None
-l_20,n_id1,n_id27,30 mph
-l_21,n_id28,n_id29,30 mph
-l_22,n_id28,n_id30,30 mph
-l_23,n_id31,n_id32,None
+l_2,n_id3,n_id4,30 mph
+l_3,n_id3,n_id5,30 mph
+l_4,n_id3,n_id6,30 mph
+l_5,n_id7,n_id8,30 mph
+l_6,n_id7,n_id9,30 mph
+l_7,n_id7,n_id10,30 mph
+l_8,n_id2,n_id0,30 mph
+l_9,n_id2,n_id11,30 mph
+l_10,n_id2,n_id12,30 mph
+l_11,n_id13,n_id14,30 mph
+l_12,n_id13,n_id15,30 mph
+l_13,n_id13,n_id12,30 mph
+l_14,n_id14,n_id16,30 mph
+l_15,n_id14,n_id13,30 mph
+l_16,n_id14,n_id17,30 mph
+l_17,n_id16,n_id14,30 mph
+l_18,n_id15,n_id13,30 mph
+l_19,n_id18,n_id19,30 mph
+l_20,n_id18,n_id20,30 mph
+l_21,n_id18,n_id21,30 mph
+l_22,n_id22,n_id23,30 mph
+l_23,n_id22,n_id19,30 mph
+l_24,n_id22,n_id24,30 mph
+l_25,n_id25,n_id26,30 mph
+l_26,n_id25,n_id27,30 mph
+l_27,n_id28,n_id29,30 mph
+l_28,n_id28,n_id30,30 mph
+l_29,n_id28,n_id31,30 mph
+l_30,n_id32,n_id33,30 mph
+l_31,n_id32,n_id34,30 mph
+l_32,n_id32,n_id35,30 mph
+l_33,n_id36,n_id37,30 mph
+l_34,n_id36,n_id26,30 mph
+l_35,n_id36,n_id38,None
+l_36,n_id39,n_id38,None
+l_37,n_id33,n_id32,30 mph
+l_38,n_id33,n_id40,30 mph
+l_39,n_id33,n_id41,30 mph
+l_40,n_id11,n_id2,30 mph
+l_41,n_id1,n_id0,30 mph
+l_42,n_id1,n_id42,30 mph
+l_43,n_id1,n_id43,30 mph
+l_44,n_id44,n_id45,30 mph
+l_45,n_id44,n_id46,30 mph
+l_46,n_id44,n_id42,30 mph
+l_47,n_id45,n_id44,30 mph
+l_48,n_id45,n_id47,30 mph
+l_49,n_id45,n_id48,30 mph
+l_50,n_id49,n_id50,30 mph
+l_51,n_id49,n_id51,30 mph
+l_52,n_id49,n_id52,30 mph
+l_53,n_id46,n_id53,30 mph
+l_54,n_id46,n_id44,30 mph
+l_55,n_id46,n_id54,30 mph
+l_56,n_id55,n_id56,30 mph
+l_57,n_id57,n_id51,30 mph
+l_58,n_id57,n_id58,30 mph
+l_59,n_id57,n_id59,30 mph
+l_60,n_id60,n_id61,30 mph
+l_61,n_id60,n_id62,30 mph
+l_62,n_id60,n_id63,30 mph
+l_63,n_id62,n_id60,30 mph
+l_64,n_id64,n_id65,30 mph
+l_65,n_id64,n_id66,30 mph
+l_66,n_id64,n_id67,30 mph
+l_67,n_id68,n_id69,30 mph
+l_68,n_id68,n_id52,30 mph
+l_69,n_id68,n_id70,30 mph
+l_70,n_id71,n_id72,30 mph
+l_71,n_id71,n_id73,30 mph
+l_72,n_id71,n_id74,30 mph
+l_73,n_id75,n_id76,30 mph
+l_74,n_id75,n_id77,30 mph
+l_75,n_id75,n_id78,30 mph
+l_76,n_id79,n_id80,30 mph
+l_77,n_id79,n_id81,30 mph
+l_78,n_id82,n_id83,30 mph
+l_79,n_id82,n_id84,30 mph
+l_80,n_id82,n_id85,30 mph
+l_81,n_id86,n_id87,30 mph
+l_82,n_id86,n_id88,30 mph
+l_83,n_id87,n_id89,30 mph
+l_84,n_id87,n_id86,30 mph
+l_85,n_id87,n_id90,30 mph
+l_86,n_id91,n_id92,30 mph
+l_87,n_id93,n_id94,30 mph
+l_88,n_id93,n_id95,30 mph
+l_89,n_id96,n_id97,30 mph
+l_90,n_id98,n_id99,30 mph
+l_91,n_id100,n_id101,30 mph
+l_92,n_id100,n_id102,30 mph
+l_93,n_id100,n_id99,30 mph
+l_94,n_id103,n_id104,30 mph
+l_95,n_id101,n_id100,30 mph
+l_96,n_id101,n_id105,30 mph
+l_97,n_id101,n_id106,30 mph
+l_98,n_id107,n_id108,None
+l_99,n_id107,n_id109,30 mph
+l_100,n_id107,n_id110,30 mph
+l_101,n_id69,n_id68,30 mph
+l_102,n_id69,n_id111,30 mph
+l_103,n_id69,n_id112,None
+l_104,n_id47,n_id45,30 mph
+l_105,n_id108,n_id107,None
+l_106,n_id108,n_id113,None
+l_107,n_id108,n_id114,None
+l_108,n_id115,n_id92,30 mph
+l_109,n_id115,n_id116,30 mph
+l_110,n_id115,n_id117,None
+l_111,n_id113,n_id108,None
+l_112,n_id113,n_id118,None
+l_113,n_id119,n_id8,30 mph
+l_114,n_id119,n_id120,None
+l_115,n_id121,n_id120,None
+l_116,n_id4,n_id3,30 mph
+l_117,n_id4,n_id122,30 mph
+l_118,n_id4,n_id123,30 mph
+l_119,n_id124,n_id17,30 mph
+l_120,n_id61,n_id60,30 mph
+l_121,n_id61,n_id125,30 mph
+l_122,n_id61,n_id126,30 mph
+l_123,n_id40,n_id33,30 mph
+l_124,n_id41,n_id33,30 mph
+l_125,n_id127,n_id104,30 mph
+l_126,n_id104,n_id103,30 mph
+l_127,n_id104,n_id127,30 mph
+l_128,n_id104,n_id102,30 mph
+l_129,n_id128,n_id129,None
+l_130,n_id129,n_id128,None
+l_131,n_id129,n_id130,None
+l_132,n_id129,n_id105,30 mph
+l_133,n_id130,n_id129,None
+l_134,n_id90,n_id87,30 mph
+l_135,n_id89,n_id87,30 mph
+l_136,n_id131,n_id53,30 mph
+l_137,n_id53,n_id46,30 mph
+l_138,n_id53,n_id131,30 mph
+l_139,n_id53,n_id132,30 mph
+l_140,n_id133,n_id134,30 mph
+l_141,n_id133,n_id56,30 mph
+l_142,n_id133,n_id135,30 mph
+l_143,n_id134,n_id133,30 mph

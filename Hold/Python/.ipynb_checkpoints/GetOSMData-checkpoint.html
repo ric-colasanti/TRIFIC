@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <title>Accessing OpenStreetMap Data from Python</title>
+      <style>
+    code {
+      display: block;
+      white-space: pre-wrap;
+      background-color: #f0f0f0;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+    <div class="container">
+    <h1>Accessing OpenStreetMap Data from Python</h1>
+
+    <h2>Installing Required Libraries</h2>
+    <p>To access OpenStreetMap data from Python, you'll need to install the following libraries:</p>
+    <ul>
+        <li><strong>OSMnx</strong>: For downloading, manipulating, and analyzing street networks.</li>
+        <li><strong>GeoPandas</strong>: For working with geospatial data.</li>
+    </ul>
+    <p>You can install these libraries using pip:</p>
+    <pre><code>pip install osmnx geopandas</code></pre>
+    <p><em>Use code with caution.</em></p>
+
+    <h2>Downloading Building Footprints for a Given Area</h2>
+    <p>To download building footprints for a specific area, you can use OSMnx's <code>building_footprints</code> function. Here's an example:</p>
+    <pre><code>import osmnx as ox
+import geopandas as gpd
+
+# Specify the geographic coordinates of the area
+north, south, east, west = 57.16, 57.13, -2.08, -2.11
+
+# Download building footprints
+buildings = ox.building_footprints(north, south, east, west)
+
+# Convert to GeoPandas GeoDataFrame
+buildings_gdf = gpd.GeoDataFrame(buildings)
+
+# Filter buildings by minimum area (optional)
+min_area = 1000  # square meters
+buildings_filtered = buildings_gdf[buildings_gdf.area >= min_area]
+
+print(buildings_filtered.head())</code></pre>
+    <p><em>Use code with caution.</em></p>
+
+    <h2>Getting a List of Available Data Sets</h2>
+    <p>To get a list of all available data sets for a given area, you can use OSMnx's <code>geometries_from_place</code> function:</p>
+    <pre><code>import osmnx as ox
+
+# Specify the place
+place = "Aberdeen, Scotland"
+
+# Get available data sets
+data_sets = ox.geometries_from_place(place)
+
+print(data_sets.head())</code></pre>
+    <p><em>Use code with caution.</em></p>
+
+    <h2>Additional Tips</h2>
+    <ul>
+        <li>Explore OSMnx Documentation: The OSMnx documentation provides detailed information and examples.</li>
+        <li>Customize Queries: You can customize your queries using various parameters like network_type, tags, and more.</li>
+        <li>Visualize Data: Use GeoPandas to visualize the downloaded data, for example, plotting building footprints on a map.</li>
+        <li>Consider Overpass API: For more complex queries, consider using the Overpass API directly.</li>
+    </ul>
+
+    <p>By following these steps and exploring the capabilities of OSMnx and GeoPandas, you can effectively access and analyze OpenStreetMap data for your specific needs.</p>
+</body>
+</html>
+</div>
+<body>
+
+</body>
+
+</html>

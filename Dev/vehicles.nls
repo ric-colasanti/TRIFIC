@@ -20,23 +20,24 @@ vehicles-own [
 
 ; Procedure to create a new vehicle
 
-to new-vehicle [ n ]
+to new-vehicle
   ; Set the current node and v-id based on the input node
-  set current-node [n-id] of node n
-  set v-id n
+  set current-node one-of nodes
+  set v-id  random 100000
+  let home-id [n-id] of current-node
   ; Move the turtle to the node and set its appearance
 
-  move-to node n
+  move-to current-node
   set color orange
-  set size 1.5
+  set size 5
 
   ; Set the speed of the vehicle
   set max-speed random-float 0.9 + 0.1
 
   ; Initialize the trip and set the home and destination nodes
   let new-trip nobody
-  set v-home node n
-  set v-destination node ( ( current-node - 1 ) mod 4 )
+  set v-home current-node
+  set v-destination one-of nodes with [n-id != home-id]
 
   ; Calculate the path from the home node to the destination node
   ask v-home [ set new-trip nw:path-to [ v-destination ] of myself ]
@@ -47,6 +48,7 @@ to new-vehicle [ n ]
   ; Initialize the current-road and next-node variables
   set current-road nobody
   set next-node nobody
+;  set color random-float 1.0 * 256 * 256 * 256 + random-float 1.0 * 256 * 256 + random-float 1.0 * 256
 end
 
 
@@ -111,7 +113,7 @@ end
 
 ; procedure to set the speed of the vehicle 
 to set-speed
-  nearest-vehicle 2
+  nearest-vehicle  2
 end
 
 
@@ -146,7 +148,8 @@ to nearest-vehicle [ check-distance ]
         ]
       ]
     ]
-  ]  
+  ] 
+ 
   ; If no close vehicle is found on the current road, check for vehicles on the next road
   if close-vehicle = nobody [
     ; if the distance to the next node is less than the checking-distance

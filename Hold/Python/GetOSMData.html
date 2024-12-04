@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <title>Accessing OpenStreetMap Data from Python</title>
+      <style>
+    code {
+      display: block;
+      white-space: pre-wrap;
+      background-color: #f0f0f0;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+    <div class="container">
+     
+
+<h2>Extracting and Plotting Building and Road Data from OpenStreetMap using osmnx, geopandas, and matplotlib</h2>
+
+<p>This code extracts building and road data from OpenStreetMap using the <code>osmnx</code> library and plots the buildings and roads on a map using <code>matplotlib</code>.</p> 
+<p>First, the necessary libraries are imported:</p> 
+<ul> 
+    <li><code>osmnx</code> for accessing OpenStreetMap data and converting it to networkx graphs</li> 
+    <li><code>geopandas</code> for handling geographic data</li> 
+    <li><code>pandas</code> for data manipulation</li>
+    <li><code>networkx</code> for network analysis</li> 
+    <li><code>matplotlib</code> for plotting</li> 
+</ul> 
+<p>Next, the tags to filter the OpenStreetMap data are defined. In this case, the code is extracting buildings, so the tag is set to <code>{'building':True}</code>.</p> 
+<p>The center point and distance for extracting the data are then defined. The center point is set to the coordinates <code>(57.1497, -2.0943)</code> and the distance is set to 100 meters.</p> 
+<p>The code then extracts buildings data from OpenStreetMap using the <code>features_from_point</code> function from <code>osmnx</code> and converts the data to a GeoDataFrame using <code>geopandas</code>.</p> 
+<p>The first few rows of the GeoDataFrame are displayed using the <code>head()</code> function.</p> 
+<p>The code then extracts roads data from OpenStreetMap using the <code>graph_from_point</code> function from <code>osmnx</code> and converts the data to a GeoDataFrame using <code>osmnx</code>.</p> 
+<p>The first few rows of the GeoDataFrame are displayed using the <code>head()</code> function.</p>
+ <p>Finally, the code plots the buildings and roads data on a map using <code>matplotlib</code>. The buildings are plotted in the original color and the roads are plotted in red. The plot is displayed using the <code>show()</code> function.</p>
+
+<h2>Code</h2>
+
+<pre><code>
+#!/usr/bin/env python
+# coding: utf-8
+
+# Import necessary libraries
+import osmnx as ox
+import geopandas as gpd
+import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
+
+# Define the tags to filter the OpenStreetMap data
+tags = {'building':True}
+
+# Define the center point and distance for extracting the data
+center\_point = (57.1497,-2.0943)
+dist = 100
+
+# Extract buildings data from OpenStreetMap
+buildings = ox.features\_from\_point(center\_point, tags, dist)
+
+# Convert the buildings data to a GeoDataFrame
+buildings\_gdf = gpd.GeoDataFrame(buildings, geometry='geometry')
+
+# Display the first few rows of the GeoDataFrame
+buildings\_gdf.head()
+
+# Extract roads data from OpenStreetMap
+roads = ox.graph\_from\_point(center\_point=center\_point,dist=dist, network\_type='all')
+
+# Convert the roads data to a GeoDataFrame
+roads\_gdf = ox.graph\_to\_gdfs(roads, nodes=False)
+
+# Display the first few rows of the GeoDataFrame
+roads\_gdf.head()
+
+# Plot the buildings and roads data
+fig, ax = plt.subplots(figsize=(8, 8))
+buildings\_gdf.plot(ax=ax)
+roads\_gdf.plot(ax=ax,color='red')
+plt.show()
+</code></pre>
+</div>
+</body>
+
+
+</html>
